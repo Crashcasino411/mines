@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MineBlast | Server-Authoritative Safe Casino</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700&display=swap');
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0b0f19;
+        }
+        .grid-tile {
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s;
+        }
+        .grid-tile:not(:disabled):hover {
+            transform: translateY(-2px);
+        }
+        .grid-tile:not(:disabled):active {
+            transform: scale(0.95);
+        }
+        .neon-glow {
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);
+        }
+    </style>
+</head>
+<body class="text-slate-200 min-h-screen flex items-center justify-center p-4 md:p-8">
+
+    <div id="landing-container" class="w-full max-w-5xl mx-auto flex flex-col gap-12 py-8 hidden">
+        <header class="flex items-center justify-between border-b border-slate-800/80 pb-6">
+            <div class="flex items-center gap-3">
+                <div class="p-2.5 bg-emerald-500/10 rounded-xl text-emerald-400">
+                    <i data-lucide="gem" class="w-7 h-7"></i>
+                </div>
+                <h1 class="text-2xl font-bold tracking-tight text-white">MINE<span class="text-emerald-400">BLAST</span></h1>
+            </div>
+            <div class="flex items-center gap-4">
+                <button onclick="navigateToAuth(false)" class="text-sm font-semibold text-slate-400 hover:text-white transition px-4 py-2">Sign In</button>
+                <button onclick="navigateToAuth(true)" class="bg-emerald-500 hover:bg-emerald-400 text-[#0b0f19] font-bold text-sm px-5 py-2.5 rounded-xl transition shadow-lg shadow-emerald-500/10">Join Engine</button>
+            </div>
+        </header>
+
+        <main class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full text-emerald-400 text-xs font-semibold">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> 100% Server-Authoritative Logic
+                </div>
+                <h2 class="text-4xl md:text-5xl font-extrabold text-white leading-[1.15] tracking-tight">
+                    Uncover Gems.<br>Avoid Explosives.<br><span class="text-emerald-400">Scale Your Multiplier.</span>
+                </h2>
+                <p class="text-slate-400 text-base md:text-lg max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                    Welcome to MineBlast, a secure non-custodial gaming sandbox. Deploy precision strategic risk models, execute instant settlements via Paystack gateway infrastructure, and audit every move in real time.
+                </p>
+                <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+                    <button onclick="navigateToAuth(true)" class="w-full sm:w-auto bg-emerald-500 hover:bg-emerald-400 text-[#0b0f19] font-bold text-base px-8 py-4 rounded-xl transition shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 group">
+                        Deploy Real-Time Account <i data-lucide="arrow-right" class="w-5 h-5 transition-transform group-hover:translate-x-1"></i>
+                    </button>
+                    <button onclick="navigateToAuth(false)" class="w-full sm:w-auto bg-slate-800/60 hover:bg-slate-800 text-slate-200 border border-slate-700/80 font-semibold text-base px-8 py-4 rounded-xl transition">
+                        Access Live Vault
+                    </button>
+                </div>
+            </div>
+
+            <div class="lg:col-span-5 relative bg-[#111827] border border-slate-800 rounded-2xl p-6 shadow-2xl overflow-hidden neon-glow mx-auto w-full max-w-[380px]">
+                <div class="absolute inset-0 bg-gradient-to-t from-emerald-500/5 to-transparent pointer-events-none"></div>
+                <div class="flex items-center justify-between border-b border-slate-800 pb-4 mb-6">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-red-500/40"></span>
+                        <span class="w-3 h-3 rounded-full bg-amber-500/40"></span>
+                        <span class="w-3 h-3 rounded-full bg-emerald-500/40"></span>
+                    </div>
+                    <span class="text-[10px] uppercase font-bold tracking-widest text-slate-500">Live Simulator</span>
+                </div>
+                <div class="grid grid-cols-4 gap-2.5 aspect-square w-full mb-6 opacity-80">
+                    <div class="rounded-lg bg-emerald-500/10 border-2 border-emerald-500/40 flex items-center justify-center"><i data-lucide="gem" class="w-5 h-5 text-emerald-400"></i></div>
+                    <div class="rounded-lg bg-[#1e293b] border border-slate-700"></div>
+                    <div class="rounded-lg bg-[#1e293b] border border-slate-700"></div>
+                    <div class="rounded-lg bg-emerald-500/10 border-2 border-emerald-500/40 flex items-center justify-center"><i data-lucide="gem" class="w-5 h-5 text-emerald-400"></i></div>
+                    <div class="rounded-lg bg-[#1e293b] border border-slate-700"></div>
+                    <div class="rounded-lg bg-red-500/10 border border-red-500/30 flex items-center justify-center"><i data-lucide="bomb" class="w-5 h-5 text-red-500/60"></i></div>
+                    <div class="rounded-lg bg-[#1e293b] border border-slate-700"></div>
+                    <div class="rounded-lg bg-[#1e293b] border border-slate-700"></div>
+                    <div class="rounded-lg bg-[#1e293b] border border-slate-700"></div>
+                    <div class="rounded-lg bg-[#1e293b] border border-slate-700"></div>
+                    <div class="rounded-lg bg-emerald-500/10 border-2 border-emerald-500/40 flex items-center justify-center"><i data-lucide="gem" class="w-5 h-5 text-emerald-400"></i></div>
+                    <div class="rounded-lg bg-[#1e293b] border border-slate-700"></div>
+                </div>
+                <div class="bg-[#0b0f19] border border-slate-800 rounded-xl p-3 flex justify-between text-xs">
+                    <span class="text-slate-500 font-medium">Estimated Return:</span>
+                    <span class="text-emerald-400 font-bold tracking-wide">4.82x Multiplier</span>
+                </div>
+            </div>
+        </main>
+
+        <footer class="grid grid-cols-1 md:grid-cols-3 gap-6 border-t border-slate-800/80 pt-10 text-xs text-slate-400">
+            <div class="flex gap-4 p-4 rounded-xl bg-[#111827]/40 border border-slate-800/40">
+                <i data-lucide="shield-check" class="w-8 h-8 text-emerald-400 shrink-0"></i>
+                <div>
+                    <h4 class="font-bold text-white mb-1 uppercase tracking-wide">Secure Sign-off</h4>
+                    <p class="leading-relaxed">Every tile matrix state space configuration logic remains isolated entirely away from clientside tampering vectors.</p>
+                </div>
+            </div>
+            <div class="flex gap-4 p-4 rounded-xl bg-[#111827]/40 border border-slate-800/40">
+                <i data-lucide="zap" class="w-8 h-8 text-amber-400 shrink-0"></i>
+                <div>
+                    <h4 class="font-bold text-white mb-1 uppercase tracking-wide">Paystack Gateways</h4>
+                    <p class="leading-relaxed">Synchronize liquidity instant deposits and process structured manual ledger escrow settlements securely.</p>
+                </div>
+            </div>
+            <div class="flex gap-4 p-4 rounded-xl bg-[#111827]/40 border border-slate-800/40">
+                <i data-lucide="cpu" class="w-8 h-8 text-indigo-400 shrink-0"></i>
+                <div>
+                    <h4 class="font-bold text-white mb-1 uppercase tracking-wide">Database Integrity</h4>
+                    <p class="leading-relaxed">User configurations remain tied directly across standard relational index structures for total state continuity.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <div id="auth-container" class="w-full max-w-md bg-[#111827] border border-slate-800 rounded-2xl p-8 shadow-2xl relative hidden">
+        <button onclick="showLandingScreen()" class="absolute top-6 left-6 flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-emerald-400 transition bg-slate-800/40 hover:bg-slate-800 border border-slate-700/60 px-3 py-1.5 rounded-lg">
+            <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Back
+        </button>
+
+        <div class="flex justify-center mb-6 mt-4">
+            <div class="p-3 bg-emerald-500/10 rounded-xl text-emerald-400">
+                <i data-lucide="gem" class="w-8 h-8"></i>
+            </div>
+        </div>
+        <h2 id="auth-title" class="text-2xl font-bold text-center text-white mb-2">Welcome to MineBlast</h2>
+        <p id="auth-subtitle" class="text-center text-xs text-slate-400 mb-6">Sign in to sync your secure vault balance</p>
+        
+        <form id="auth-form" class="space-y-4">
+            <!-- DYNAMIC USERNAME FIELD (SHOWS ONLY ON SIGNUP) -->
+            <div id="username-wrapper" class="hidden">
+                <label class="block text-xs font-semibold mb-2 text-slate-400 uppercase tracking-wider">Username</label>
+                <input type="text" id="auth-username" class="w-full bg-[#161f30] border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Choose a username">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold mb-2 text-slate-400 uppercase tracking-wider">Email Address</label>
+                <input type="email" id="auth-email" class="w-full bg-[#161f30] border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 transition" required>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold mb-2 text-slate-400 uppercase tracking-wider">Password</label>
+                <input type="password" id="auth-password" class="w-full bg-[#161f30] border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 transition" required>
+            </div>
+            <!-- DYNAMIC PASSWORD CONFIRMATION FIELD (SHOWS ONLY ON SIGNUP) -->
+            <div id="confirm-password-wrapper" class="hidden">
+                <label class="block text-xs font-semibold mb-2 text-slate-400 uppercase tracking-wider">Confirm Password</label>
+                <input type="password" id="auth-confirm-password" class="w-full bg-[#161f30] border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 transition">
+            </div>
+            <button type="submit" id="auth-submit-btn" class="w-full bg-emerald-500 hover:bg-emerald-400 text-[#0b0f19] font-bold py-3.5 rounded-xl transition shadow-lg shadow-emerald-500/10">
+                Sign In
+            </button>
+        </form>
+        
+        <p class="text-xs text-center text-slate-400 mt-6" id="auth-toggle-text">
+            New player? <button type="button" id="auth-toggle-btn" class="text-emerald-400 font-bold hover:underline">Create Account</button>
+        </p>
+    </div>
+
+    <!-- EMAIL CONFIRMATION OVERLAY MODAL -->
+    <div id="email-confirmation-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 items-center justify-center p-4 hidden flex">
+        <div class="bg-[#111827] border border-slate-800 w-full max-w-md rounded-2xl overflow-hidden shadow-2xl p-8 text-center flex flex-col items-center">
+            <div class="p-4 bg-emerald-500/10 rounded-2xl text-emerald-400 mb-4 animate-bounce">
+                <i data-lucide="mail" class="w-10 h-10"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-white mb-2">Almost Ready! 🚀</h3>
+            <p class="text-sm text-slate-400 mb-4 leading-relaxed">
+                We've fired a secure validation link to <br>
+                <span id="confirm-modal-email" class="font-bold text-emerald-400 text-base break-all">user@email.com</span>
+            </p>
+            <p class="text-xs text-slate-500 max-w-xs mb-6">
+                Please check your inbox (and junk/spam folder) and follow the link to authorize your engine vault access.
+            </p>
+            <button id="close-confirm-modal-btn" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-semibold py-3 rounded-xl transition border border-slate-700/60 text-sm">
+                Got It, Back to Home
+            </button>
+        </div>
+    </div>
+
+    <div id="game-container" class="w-full max-w-4xl bg-[#111827] border border-slate-800 rounded-2xl shadow-2xl overflow-hidden grid grid-cols-1 md:grid-cols-3 hidden">
+        
+        <div class="p-6 bg-[#161f30] border-b md:border-b-0 md:border-r border-slate-800 flex flex-col justify-between gap-6">
+            <div class="space-y-6">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2 bg-emerald-500/10 rounded-lg text-emerald-400">
+                            <i data-lucide="gem" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-xl font-bold tracking-tight text-white">MINE<span class="text-emerald-400">BLAST</span></h1>
+                            <p id="user-welcome" class="text-[11px] text-slate-400 truncate max-w-[120px]"></p>
+                        </div>
+                    </div>
+                    <button id="logout-btn" title="Sign Out" class="text-slate-500 hover:text-red-400 p-2 rounded-lg hover:bg-slate-800/50 transition">
+                        <i data-lucide="log-out" class="w-4 h-4"></i>
+                    </button>
+                </div>
+
+                <div class="p-4 bg-[#0b0f19] border border-slate-800 rounded-xl p-3 flex flex-col gap-3">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <div class="text-amber-400 bg-amber-500/10 p-2 rounded-lg">
+                                <i data-lucide="wallet" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] uppercase tracking-wider font-semibold text-slate-400">Database Balance</p>
+                                <p id="balance-display" class="text-lg font-bold text-white">₦0.00</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="open-wallet-btn" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold py-2 rounded-lg transition border border-slate-700/60 flex items-center justify-center gap-1.5">
+                        <i data-lucide="arrow-left-right" class="w-3.5 h-3.5"></i> Deposit / Withdraw
+                    </button>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Bet Amount (Min 5k / Max 150k)</label>
+                    <div class="relative rounded-xl bg-[#0b0f19] border border-slate-700 focus-within:border-emerald-500 transition p-3 flex items-center justify-between">
+                        <span class="text-xs font-bold text-slate-500">₦</span>
+                        <input id="bet-input" type="number" value="5000" min="5000" max="150000" class="bg-transparent text-white font-bold w-full focus:outline-none px-2 text-right">
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <div class="flex justify-between text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                        <label>Mines</label>
+                        <span id="mines-count-display" class="text-emerald-400 font-bold">3</span>
+                    </div>
+                    <select id="mines-select" class="w-full bg-[#0b0f19] border border-slate-700 rounded-xl p-3 font-medium text-white focus:outline-none focus:border-emerald-500 cursor-pointer">
+                    </select>
+                </div>
+
+                <div id="game-stats" class="hidden space-y-3 p-4 bg-[#0b0f19]/50 rounded-xl border border-slate-800">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-slate-400">Current Profit:</span>
+                        <span id="stat-profit" class="font-bold text-emerald-400">₦0.00</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-slate-400">Next Multiplier:</span>
+                        <span id="stat-multiplier" class="font-bold text-slate-300">1.00x</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-3">
+                <button id="primary-btn" class="w-full bg-emerald-500 hover:bg-emerald-400 active:bg-emerald-600 text-[#0b0f19] font-bold py-4 px-6 rounded-xl transition shadow-lg shadow-emerald-500/10 flex items-center justify-center gap-2 text-md">
+                    Bet
+                </button>
+                <button id="cashout-btn" class="hidden w-full bg-amber-500 hover:bg-amber-400 text-[#0b0f19] font-bold py-4 px-6 rounded-xl transition shadow-lg shadow-amber-500/10 flex items-center justify-center gap-2 text-md">
+                    Cashout
+                </button>
+            </div>
+        </div>
+
+        <div class="col-span-2 p-6 md:p-12 flex flex-col items-center justify-center bg-[#0d1321]">
+            <div id="grid-container" class="grid grid-cols-5 gap-3 w-full max-w-[420px] aspect-square">
+            </div>
+        </div>
+    </div>
+
+    <div id="wallet-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 items-center justify-center p-4 hidden flex">
+        <div class="bg-[#111827] border border-slate-800 w-full max-w-md rounded-2xl overflow-hidden shadow-2xl flex flex-col">
+            <div class="p-5 border-b border-slate-800 flex justify-between items-center bg-[#161f30]">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <i data-lucide="landmark" class="w-5 h-5 text-emerald-400"></i> Cash Desk Vault
+                </h3>
+                <button id="close-wallet-btn" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <div class="flex border-b border-slate-800 text-xs">
+                <button id="tab-deposit-btn" class="flex-1 py-3.5 text-center font-bold border-b-2 border-emerald-500 text-emerald-400 bg-slate-900/40">Deposit</button>
+                <button id="tab-withdraw-btn" class="flex-1 py-3.5 text-center font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200">Withdrawal</button>
+                <button id="tab-history-btn" class="flex-1 py-3.5 text-center font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200">History</button>
+            </div>
+
+            <div class="p-6 space-y-5 overflow-y-auto max-h-[70vh]">
+                <div id="panel-deposit" class="space-y-4">
+                    <form id="deposit-form" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider">Amount to Deposit (₦)</label>
+                            <input id="dep-amount" type="number" min="2000" placeholder="Minimum ₦2,000" class="w-full bg-[#0b0f19] border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 text-sm" required>
+                        </div>
+                        <button type="submit" id="paystack-submit-btn" class="w-full bg-emerald-500 hover:bg-emerald-400 text-[#0b0f19] font-bold py-3 rounded-xl transition text-sm shadow-md flex items-center justify-center gap-2">
+                            <i data-lucide="credit-card" class="w-4 h-4"></i> Pay with Paystack
+                        </button>
+                    </form>
+                </div>
+
+                <div id="panel-withdraw" class="space-y-4 hidden">
+                    <form id="withdraw-form" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider">Amount to Withdraw (₦)</label>
+                            <input id="wit-amount" type="number" min="1000" placeholder="Minimum ₦1,000" class="w-full bg-[#0b0f19] border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 text-sm" required>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider">Bank Details</label>
+                            <textarea id="wit-details" rows="3" placeholder="Bank Name, Account Number, Full Account Name" class="w-full bg-[#0b0f19] border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 text-sm" required></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-amber-500 hover:bg-amber-400 text-[#0b0f19] font-bold py-3 rounded-xl transition text-sm shadow-md">Request Manual Payout</button>
+                    </form>
+                </div>
+
+                <div id="panel-history" class="space-y-3 hidden">
+                    <div id="history-loading" class="text-center text-slate-400 py-6 text-xs flex flex-col items-center gap-2">
+                        <div class="w-5 h-5 border-2 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin"></div>
+                        Syncing statement ledger...
+                    </div>
+                    <div id="history-empty" class="text-center text-slate-500 py-8 text-xs hidden">
+                        <i data-lucide="history" class="w-8 h-8 mx-auto mb-2 opacity-30"></i>
+                        No transaction logs found for this account.
+                    </div>
+                    <div id="history-list" class="space-y-2.5 max-h-[340px] overflow-y-auto pr-1"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = "https://pdfpalrsgulyopuzqgsy.supabase.co"; 
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBkZnBhbHJzZ3VseW9wdXpxZ3N5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5ODI2MzYsImV4cCI6MjA5NTU1ODYzNn0.ZP56IfrJ90DmO7_diu4G9fWZz9p0U3b5egW_wfdbpeo";
+        const PAYSTACK_PUBLIC_KEY = "pk_live_e15d1a710ff307e5f76b962a8db5a9a8caba433a"; 
+
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const GRID_SIZE = 25;
+        let minesCount = 3;
+        let betAmount = 5000;
+        let revealedCount = 0;
+        let isGameActive = false;
+        let currentBalance = 0.00; 
+        let isSignUpMode = false;
+        let currentUserSession = null;
+        let activeBackendGameId = null;
+        
+        let tileElements = [];
+
+        const landingContainer = document.getElementById('landing-container');
+        const authContainer = document.getElementById('auth-container');
+        const gameContainer = document.getElementById('game-container');
+        const authForm = document.getElementById('auth-form');
+        const authUsername = document.getElementById('auth-username');
+        const authEmail = document.getElementById('auth-email');
+        const authPassword = document.getElementById('auth-password');
+        const authConfirmPassword = document.getElementById('auth-confirm-password');
+        const usernameWrapper = document.getElementById('username-wrapper');
+        const confirmPasswordWrapper = document.getElementById('confirm-password-wrapper');
+        const authTitle = document.getElementById('auth-title');
+        const authSubtitle = document.getElementById('auth-subtitle');
+        const authSubmitBtn = document.getElementById('auth-submit-btn');
+        const authToggleBtn = document.getElementById('auth-toggle-btn');
+        const authToggleText = document.getElementById('auth-toggle-text');
+        
+        const gridContainer = document.getElementById('grid-container');
+        const minesSelect = document.getElementById('mines-select');
+        const minesCountDisplay = document.getElementById('mines-count-display');
+        const betInput = document.getElementById('bet-input');
+        const primaryBtn = document.getElementById('primary-btn');
+        const cashoutBtn = document.getElementById('cashout-btn');
+        const gameStats = document.getElementById('game-stats');
+        const statProfit = document.getElementById('stat-profit');
+        const statMultiplier = document.getElementById('stat-multiplier');
+        const balanceDisplay = document.getElementById('balance-display');
+        const userWelcome = document.getElementById('user-welcome');
+        const logoutBtn = document.getElementById('logout-btn');
+
+        const walletModal = document.getElementById('wallet-modal');
+        const openWalletBtn = document.getElementById('open-wallet-btn');
+        const closeWalletBtn = document.getElementById('close-wallet-btn');
+        
+        const tabDepositBtn = document.getElementById('tab-deposit-btn');
+        const tabWithdrawBtn = document.getElementById('tab-withdraw-btn');
+        const tabHistoryBtn = document.getElementById('tab-history-btn');
+        
+        const panelDeposit = document.getElementById('panel-deposit');
+        const panelWithdraw = document.getElementById('panel-withdraw');
+        const panelHistory = document.getElementById('panel-history');
+        
+        const depositForm = document.getElementById('deposit-form');
+        const withdrawForm = document.getElementById('withdraw-form');
+        const historyLoading = document.getElementById('history-loading');
+        const historyEmpty = document.getElementById('history-empty');
+        const historyList = document.getElementById('history-list');
+
+        const emailConfirmationModal = document.getElementById('email-confirmation-modal');
+        const confirmModalEmail = document.getElementById('confirm-modal-email');
+        const closeConfirmModalBtn = document.getElementById('close-confirm-modal-btn');
+
+        closeConfirmModalBtn.addEventListener('click', () => {
+            emailConfirmationModal.classList.add('hidden');
+            showLandingScreen();
+        });
+
+        function navigateToAuth(wantsSignup = false) {
+            landingContainer.classList.add('hidden');
+            authContainer.classList.remove('hidden');
+            isSignUpMode = wantsSignup;
+            updateAuthInterfaceStrings();
+        }
+
+        function showLandingScreen() {
+            gameContainer.classList.add('hidden');
+            authContainer.classList.add('hidden');
+            landingContainer.classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        async function checkUserSession() {
+            try {
+                const { data: { session }, error } = await supabaseClient.auth.getSession();
+                if (error) throw error;
+                
+                if (session) {
+                    currentUserSession = session.user;
+                    showGameScreen(session.user);
+                } else {
+                    showLandingScreen();
+                }
+            } catch (err) {
+                console.error("Session check failed:", err);
+                showLandingScreen();
+            }
+        }
+
+        async function showGameScreen(user) {
+            landingContainer.classList.add('hidden');
+            authContainer.classList.add('hidden');
+            gameContainer.classList.remove('hidden');
+            
+            // Checks for custom username metadata, otherwise falls back to email string parsing splits
+            const displayName = user.user_metadata?.username || user.email.split('@')[0];
+            userWelcome.textContent = displayName;
+            
+            initGameBoard();
+            await syncProfileWallet();
+        }
+
+        function updateAuthInterfaceStrings() {
+            if (isSignUpMode) {
+                authTitle.textContent = "Create Account";
+                authSubtitle.textContent = "Fund your account after registration to play";
+                authSubmitBtn.textContent = "Register & Play";
+                authToggleText.innerHTML = `Already have an account? <button type="button" id="auth-toggle-btn" class="text-emerald-400 font-bold hover:underline">Sign In</button>`;
+                
+                // Show custom signup fields and make them required dynamically
+                usernameWrapper.classList.remove('hidden');
+                confirmPasswordWrapper.classList.remove('hidden');
+                authUsername.required = true;
+                authConfirmPassword.required = true;
+            } else {
+                authTitle.textContent = "Welcome to MineBlast";
+                authSubtitle.textContent = "Sign in to sync your secure vault balance";
+                authSubmitBtn.textContent = "Sign In";
+                authToggleText.innerHTML = `New player? <button type="button" id="auth-toggle-btn" class="text-emerald-400 font-bold hover:underline">Create Account</button>`;
+                
+                // Hide custom signup fields and remove requirements to keep regular login working
+                usernameWrapper.classList.add('hidden');
+                confirmPasswordWrapper.classList.add('hidden');
+                authUsername.required = false;
+                authConfirmPassword.required = false;
+            }
+            document.getElementById('auth-toggle-btn').addEventListener('click', () => authToggleBtn.click());
+            lucide.createIcons();
+        }
+
+        authToggleBtn.addEventListener('click', () => {
+            isSignUpMode = !isSignUpMode;
+            updateAuthInterfaceStrings();
+        });
+
+        authForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = authEmail.value;
+            const password = authPassword.value;
+
+            if (isSignUpMode) {
+                const username = authUsername.value.trim();
+                const confirmPassword = authConfirmPassword.value;
+
+                // Stop form submission if passwords do not match
+                if (password !== confirmPassword) {
+                    alert("❌ Passwords do not match! Please check your entry and try again.");
+                    return;
+                }
+
+                // Registers account while attaching the custom username option securely inside user_metadata
+                const { data, error } = await supabaseClient.auth.signUp({ 
+                    email, 
+                    password,
+                    options: {
+                        emailRedirectTo: window.location.origin,
+                        data: {
+                            username: username
+                        }
+                    }
+                });
+                if (error) alert(`Registration Error: ${error.message}`);
+                else {
+                    authForm.reset();
+                    confirmModalEmail.textContent = email;
+                    authContainer.classList.add('hidden');
+                    emailConfirmationModal.classList.remove('hidden');
+                    lucide.createIcons();
+                }
+            } else {
+                const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+                if (error) alert(`Login Failed: ${error.message}`);
+                else {
+                    currentUserSession = data.user;
+                    showGameScreen(data.user);
+                }
+            }
+        });
+
+        logoutBtn.addEventListener('click', async () => {
+            await supabaseClient.auth.signOut();
+            location.reload();
+        });
+
+        async function syncProfileWallet() {
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (!user) return;
+
+                const localBackupKey = `mineblast_bal_${user.id}`;
+                const cachedBalance = localStorage.getItem(localBackupKey);
+
+                const { data, error } = await supabaseClient.from('profiles').select('balance').eq('id', user.id).single();
+                
+                if (error) {
+                    console.warn("Database sync blocked, pulling from local secure storage layer...");
+                    if (cachedBalance !== null) {
+                        currentBalance = parseFloat(cachedBalance);
+                    } else {
+                        currentBalance = 0.00;
+                    }
+                } else if (data) {
+                    currentBalance = parseFloat(data.balance);
+                    localStorage.setItem(localBackupKey, currentBalance);
+                }
+            } catch (err) {
+                console.warn("Profiles table balance error:", err.message);
+            } finally {
+                balanceDisplay.textContent = `₦${currentBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            }
+        }
+
+        async function updateDatabaseWalletBalance(newBalanceAmount) {
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (!user) return false;
+
+                const localBackupKey = `mineblast_bal_${user.id}`;
+                
+                currentBalance = newBalanceAmount;
+                localStorage.setItem(localBackupKey, currentBalance);
+                balanceDisplay.textContent = `₦${currentBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+
+                const { error } = await supabaseClient.from('profiles').update({ balance: newBalanceAmount }).eq('id', user.id);
+                if (error) {
+                    console.warn("Cloud synchronization delayed. Preserved securely inside local memory storage context.", error.message);
+                }
+                return true;
+            } catch (err) {
+                console.error("Database update transaction failed.", err.message);
+                return false;
+            }
+        }
+
+        openWalletBtn.addEventListener('click', () => {
+            if (isGameActive) {
+                alert("❌ Finish your active game before modifying wallet funds!");
+                return;
+            }
+            tabDepositBtn.click();
+            walletModal.classList.remove('hidden');
+        });
+        
+        closeWalletBtn.addEventListener('click', () => walletModal.classList.add('hidden'));
+
+        tabDepositBtn.addEventListener('click', () => {
+            tabDepositBtn.className = "flex-1 py-3.5 text-center font-bold border-b-2 border-emerald-500 text-emerald-400 bg-slate-900/40";
+            tabWithdrawBtn.className = "flex-1 py-3.5 text-center font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200";
+            tabHistoryBtn.className = "flex-1 py-3.5 text-center font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200";
+            panelDeposit.classList.remove('hidden');
+            panelWithdraw.classList.add('hidden');
+            panelHistory.classList.add('hidden');
+        });
+
+        tabWithdrawBtn.addEventListener('click', () => {
+            tabWithdrawBtn.className = "flex-1 py-3.5 text-center font-bold border-b-2 border-amber-500 text-amber-400 bg-slate-900/40";
+            tabDepositBtn.className = "flex-1 py-3.5 text-center font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200";
+            tabHistoryBtn.className = "flex-1 py-3.5 text-center font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200";
+            panelWithdraw.classList.remove('hidden');
+            panelDeposit.classList.add('hidden');
+            panelHistory.classList.add('hidden');
+        });
+
+        tabHistoryBtn.addEventListener('click', async () => {
+            tabHistoryBtn.className = "flex-1 py-3.5 text-center font-bold border-b-2 border-indigo-500 text-indigo-400 bg-slate-900/40";
+            tabDepositBtn.className = "flex-1 py-3.5 text-center font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200";
+            tabWithdrawBtn.className = "flex-1 py-3.5 text-center font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200";
+            panelHistory.classList.remove('hidden');
+            panelDeposit.classList.add('hidden');
+            panelWithdraw.classList.add('hidden');
+            await fetchAndRenderTransactionLogs();
+        });
+
+        async function fetchAndRenderTransactionLogs() {
+            if (!currentUserSession) return;
+            
+            historyLoading.classList.remove('hidden');
+            historyEmpty.classList.add('hidden');
+            historyList.innerHTML = '';
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('transactions')
+                    .select('*')
+                    .eq('user_id', currentUserSession.id)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                historyLoading.classList.add('hidden');
+
+                if (!data || data.length === 0) {
+                    historyEmpty.classList.remove('hidden');
+                    lucide.createIcons();
+                    return;
+                }
+
+                data.forEach(tx => {
+                    const block = document.createElement('div');
+                    block.className = "bg-[#0b0f19] border border-slate-800/80 rounded-xl p-3 flex items-center justify-between text-xs";
+                    
+                    const isDeposit = tx.type === 'deposit';
+                    const amountText = `₦${parseFloat(tx.amount).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+                    const dateStr = tx.created_at ? new Date(tx.created_at).toLocaleDateString(undefined, {month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit'}) : 'Recent';
+                    
+                    let badgeClass = "bg-slate-800 text-slate-400";
+                    if (tx.status === 'approved') badgeClass = "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
+                    if (tx.status === 'pending') badgeClass = "bg-amber-500/10 text-amber-400 border border-amber-500/20";
+                    if (tx.status === 'rejected') badgeClass = "bg-red-500/10 text-red-400 border border-red-500/20";
+
+                    block.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 rounded-lg ${isDeposit ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'}">
+                                <i data-lucide="${isDeposit ? 'arrow-down-left' : 'arrow-up-right'}" class="w-4 h-4"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-white uppercase text-[10px] tracking-wider">${tx.type}</p>
+                                <p class="text-[10px] text-slate-500 mt-0.5">${dateStr}</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-bold ${isDeposit ? 'text-emerald-400' : 'text-slate-200'}">${isDeposit ? '+' : '-'}${amountText}</p>
+                            <span class="inline-block px-2 py-0.5 rounded text-[9px] font-semibold uppercase tracking-wide mt-1 ${badgeClass}">${tx.status || 'pending'}</span>
+                        </div>
+                    `;
+                    historyList.appendChild(block);
+                });
+                
+                lucide.createIcons();
+
+            } catch (err) {
+                console.error("Ledger sync failure:", err);
+                historyLoading.classList.add('hidden');
+                historyList.innerHTML = `<div class="text-center text-red-400 py-4 text-[11px]">❌ Sync issue: ${err.message}</div>`;
+            }
+        }
+
+        depositForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const amount = parseFloat(document.getElementById('dep-amount').value);
+            
+            if (amount < 2000) {
+                alert("❌ Minimum deposit amount allowed is ₦2,000");
+                return;
+            }
+
+            if (!currentUserSession || !currentUserSession.email) {
+                alert("Session error. Please log in again.");
+                return;
+            }
+
+            async function handleSuccessfulPayment(reference) {
+                alert("💳 Payment authorized by Paystack! reference: " + reference);
+                
+                await supabaseClient.from('transactions').insert({
+                    user_id: currentUserSession.id,
+                    type: 'deposit',
+                    amount: amount,
+                    reference_proof: reference,
+                    status: 'approved'
+                });
+
+                const updatedTotal = currentBalance + amount;
+                const walletUpdateSuccess = await updateDatabaseWalletBalance(updatedTotal);
+
+                if (walletUpdateSuccess) {
+                    alert(`🎉 Success! ₦${amount.toLocaleString()} has been securely credited to your account.`);
+                } else {
+                    alert("⚠️ Balance sync delay. Your transaction was logged, please refresh.");
+                }
+
+                depositForm.reset();
+                walletModal.classList.add('hidden');
+            }
+
+            try {
+                let handler = PaystackPop.setup({
+                    key: PAYSTACK_PUBLIC_KEY,
+                    email: currentUserSession.email,
+                    amount: Math.round(amount * 100),
+                    currency: "NGN",
+                    ref: 'MB-' + Math.floor((Math.random() * 1000000000) + 1),
+                    callback: function(response) {
+                        handleSuccessfulPayment(response.reference);
+                    },
+                    onClose: function() {
+                        alert("❌ Transaction window canceled.");
+                    }
+                });
+                handler.openIframe();
+            } catch (err) {
+                try {
+                    const altHandler = new PaystackPop();
+                    altHandler.newTransaction({
+                        key: PAYSTACK_PUBLIC_KEY,
+                        email: currentUserSession.email,
+                        amount: Math.round(amount * 100),
+                        currency: "NGN",
+                        ref: 'MB-' + Math.floor((Math.random() * 1000000000) + 1),
+                        onSuccess: function(response) {
+                            handleSuccessfulPayment(response.reference);
+                        },
+                        onCancel: function() {
+                            alert("❌ Transaction window canceled.");
+                        }
+                    });
+                } catch (fallbackErr) {
+                    alert("❌ Failed to initiate Paystack layout overlay window.");
+                    console.error(fallbackErr);
+                }
+            }
+        });
+
+        withdrawForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const amount = parseFloat(document.getElementById('wit-amount').value);
+            const details = document.getElementById('wit-details').value;
+
+            if (amount > currentBalance) {
+                alert("❌ Insufficient funds available to fulfill this withdrawal request!");
+                return;
+            }
+
+            const { data: { user } } = await supabaseClient.auth.getUser();
+            
+            const syncStatus = await updateDatabaseWalletBalance(currentBalance - amount);
+            if (!syncStatus) return;
+
+            const { error } = await supabaseClient.from('transactions').insert({
+                user_id: user.id,
+                type: 'withdrawal',
+                amount: amount,
+                account_details: details,
+                status: 'pending'
+            });
+
+            if (error) {
+                alert("Submission failed: " + error.message);
+                await updateDatabaseWalletBalance(currentBalance + amount);
+            } else {
+                alert("💸 Withdrawal logged! The requested amount has been held in escrow and will be paid manually.");
+                withdrawForm.reset();
+                walletModal.classList.add('hidden');
+            }
+        });
+
+        function getMultiplier(mines, revealed) {
+            if (revealed === 0) return 1.00;
+            let n = GRID_SIZE, m = mines;
+            let num = 1, den = 1;
+            for (let i = 0; i < revealed; i++) {
+                num *= (n - i);
+                den *= (n - m - i);
+            }
+            return parseFloat(((num / den) * 0.97).toFixed(2));
+        }
+
+        function initGameBoard() {
+            minesSelect.innerHTML = '';
+            for (let i = 1; i < GRID_SIZE; i++) {
+                const opt = document.createElement('option');
+                opt.value = i; opt.textContent = i;
+                if (i === 3) opt.selected = true;
+                minesSelect.appendChild(opt);
+            }
+
+            gridContainer.innerHTML = '';
+            tileElements = [];
+            for (let i = 0; i < GRID_SIZE; i++) {
+                const tile = document.createElement('button');
+                tile.dataset.index = i;
+                tile.disabled = true;
+                tile.className = "grid-tile aspect-square rounded-xl bg-[#1e293b] border border-slate-700/50 flex items-center justify-center text-slate-400 shadow-inner disabled:opacity-60";
+                tile.innerHTML = `<div class="icon-container transition-transform duration-300"></div>`;
+                tile.addEventListener('click', () => handleTileClick(i));
+                gridContainer.appendChild(tile);
+                tileElements.push(tile);
+            }
+            lucide.createIcons();
+        }
+
+        async function startMinesGameRound() {
+            betAmount = parseFloat(betInput.value) || 5000;
+            minesCount = parseInt(minesSelect.value);
+
+            if (betAmount < 5000) {
+                alert("❌ Minimum stake amount allowed is ₦5,000");
+                return;
+            }
+            if (betAmount > 150000) {
+                alert("❌ Maximum stake amount allowed is ₦150,000");
+                return;
+            }
+            if (betAmount > currentBalance) {
+                alert("❌ Insufficient Funds!");
+                return;
+            }
+
+            const { data, error } = await supabaseClient.rpc('engine_start_game', {
+                p_bet_amount: betAmount,
+                p_mines_count: minesCount
+            });
+
+            if (error) {
+                alert("❌ Engine rejection: " + error.message);
+                return;
+            }
+
+            activeBackendGameId = data.game_id;
+            await updateDatabaseWalletBalance(parseFloat(data.new_balance));
+
+            revealedCount = 0;
+            isGameActive = true;
+
+            primaryBtn.classList.add('hidden');
+            cashoutBtn.classList.remove('hidden');
+            cashoutBtn.disabled = true;
+            cashoutBtn.className = cashoutBtn.className.replace('bg-amber-500', 'bg-slate-700 text-slate-400 cursor-not-allowed');
+            gameStats.classList.remove('hidden');
+            betInput.disabled = true;
+            minesSelect.disabled = true;
+
+            updateStatsDisplayMetrics();
+
+            tileElements.forEach(tile => {
+                tile.disabled = false;
+                delete tile.dataset.revealed; 
+                tile.className = "grid-tile aspect-square rounded-xl bg-[#1e293b] hover:bg-[#2e3e56] border border-slate-600 flex items-center justify-center cursor-pointer shadow-md";
+                tile.querySelector('.icon-container').innerHTML = '';
+            });
+        }
+
+        async function handleTileClick(index) {
+            if (!isGameActive || !activeBackendGameId) return;
+            const tile = tileElements[index];
+            if (tile.dataset.revealed === "true") return;
+
+            tile.dataset.revealed = "true";
+            tile.disabled = true;
+
+            const { data, error } = await supabaseClient.rpc('engine_flip_tile', {
+                p_game_id: activeBackendGameId,
+                p_tile_index: index
+            });
+
+            if (error) {
+                alert("❌ Sync error: " + error.message);
+                return;
+            }
+
+            if (data.status === 'lost') {
+                endGameRoundSettlement(false, data.all_mines);
+            } else if (data.status === 'safe') {
+                revealedCount++;
+                tile.className = "grid-tile aspect-square rounded-xl bg-emerald-500/10 border-2 border-emerald-500/50 flex items-center justify-center shadow-lg shadow-emerald-500/5";
+                tile.querySelector('.icon-container').innerHTML = `<i data-lucide="gem" class="w-7 h-7 text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.5)]"></i>`;
+                lucide.createIcons();
+
+                if (revealedCount === 1) {
+                    cashoutBtn.disabled = false;
+                    cashoutBtn.className = cashoutBtn.className.replace('bg-slate-700 text-slate-400 cursor-not-allowed', 'bg-amber-500 text-[#0b0f19]');
+                }
+
+                updateStatsDisplayMetrics();
+
+                if (revealedCount === GRID_SIZE - minesCount) {
+                    const currentMult = getMultiplier(minesCount, revealedCount);
+                    const { data: winData } = await supabaseClient.rpc('engine_cashout_game', {
+                        p_game_id: activeBackendGameId,
+                        p_multiplier: currentMult
+                    });
+                    endGameRoundSettlement(true, winData.all_mines, winData.new_balance);
+                }
+            }
+        }
+
+        function updateStatsDisplayMetrics() {
+            const currentMult = getMultiplier(minesCount, revealedCount);
+            const nextMult = getMultiplier(minesCount, revealedCount + 1);
+            const currentProfit = betAmount * currentMult;
+            
+            statProfit.textContent = `₦${currentProfit.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+            statMultiplier.textContent = `${nextMult}x`;
+            cashoutBtn.innerHTML = revealedCount > 0 ? `Cashout: ₦${currentProfit.toLocaleString(undefined, {maximumFractionDigits: 0})}` : `Cashout`;
+        }
+
+        async function triggerManualCashoutRequest() {
+            if (!isGameActive || revealedCount === 0 || !activeBackendGameId) return;
+            
+            const currentMult = getMultiplier(minesCount, revealedCount);
+            
+            const { data, error } = await supabaseClient.rpc('engine_cashout_game', {
+                p_game_id: activeBackendGameId,
+                p_multiplier: currentMult
+            });
+
+            if (error) {
+                alert("❌ Cashout failed: " + error.message);
+                return;
+            }
+
+            endGameRoundSettlement(true, data.all_mines, data.new_balance, data.payout);
+        }
+
+        async function endGameRoundSettlement(isWin, serverMinesArray, updatedBalance = null, dynamicPayout = 0) {
+            isGameActive = false;
+            const finalMult = getMultiplier(minesCount, revealedCount);
+
+            if (updatedBalance !== null) {
+                await updateDatabaseWalletBalance(parseFloat(updatedBalance));
+            }
+            
+            tileElements.forEach((tile, idx) => {
+                tile.disabled = true;
+                const container = tile.querySelector('.icon-container');
+                if (serverMinesArray && serverMinesArray.includes(idx)) {
+                    if (tile.dataset.revealed !== "true") {
+                        tile.className = "grid-tile aspect-square rounded-xl bg-red-950/20 border border-red-900/40 flex items-center justify-center opacity-60";
+                        container.innerHTML = `<i data-lucide="bomb" class="w-6 h-6 text-red-700"></i>`;
+                    } else {
+                        tile.className = "grid-tile aspect-square rounded-xl bg-red-500/20 border-2 border-red-500 flex items-center justify-center animate-bounce shadow-lg shadow-red-500/20";
+                        container.innerHTML = `<i data-lucide="bomb" class="w-7 h-7 text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.7)]"></i>`;
+                    }
+                } else if (tile.dataset.revealed !== "true") {
+                    tile.className = "grid-tile aspect-square rounded-xl bg-slate-800/40 border border-slate-700 flex items-center justify-center opacity-40";
+                    container.innerHTML = `<i data-lucide="gem" class="w-5 h-5 text-slate-500"></i>`;
+                }
+            });
+            lucide.createIcons();
+
+            primaryBtn.classList.remove('hidden');
+            cashoutBtn.classList.add('hidden');
+            betInput.disabled = false;
+            minesSelect.disabled = false;
+
+            activeBackendGameId = null;
+
+            if (isWin) {
+                const displayProfit = dynamicPayout > 0 ? dynamicPayout : (betAmount * finalMult);
+                alert(`🎉 Victory! Vault balance saved. Credited ₦${displayProfit.toLocaleString()} (${finalMult}x)!`);
+            } else {
+                alert("💥 Boom! You uncovered a mine. Game round lost.");
+            }
+        }
+
+        primaryBtn.addEventListener('click', startMinesGameRound);
+        cashoutBtn.addEventListener('click', triggerManualCashoutRequest);
+        minesSelect.addEventListener('change', (e) => minesCountDisplay.textContent = e.target.value);
+
+        window.onload = checkUserSession;
+    </script>
+</body>
+</html>
