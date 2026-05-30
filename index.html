@@ -163,26 +163,6 @@
         </p>
     </div>
 
-    <!-- EMAIL CONFIRMATION OVERLAY MODAL -->
-    <div id="email-confirmation-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 items-center justify-center p-4 hidden flex">
-        <div class="bg-[#111827] border border-slate-800 w-full max-w-md rounded-2xl overflow-hidden shadow-2xl p-8 text-center flex flex-col items-center">
-            <div class="p-4 bg-emerald-500/10 rounded-2xl text-emerald-400 mb-4 animate-bounce">
-                <i data-lucide="mail" class="w-10 h-10"></i>
-            </div>
-            <h3 class="text-2xl font-bold text-white mb-2">Almost Ready! 🚀</h3>
-            <p class="text-sm text-slate-400 mb-4 leading-relaxed">
-                We've fired a secure validation link to <br>
-                <span id="confirm-modal-email" class="font-bold text-emerald-400 text-base break-all">user@email.com</span>
-            </p>
-            <p class="text-xs text-slate-500 max-w-xs mb-6">
-                Please check your inbox (and junk/spam folder) and follow the link to authorize your engine vault access.
-            </p>
-            <button id="close-confirm-modal-btn" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-semibold py-3 rounded-xl transition border border-slate-700/60 text-sm">
-                Got It, Back to Home
-            </button>
-        </div>
-    </div>
-
     <div id="game-container" class="w-full max-w-4xl bg-[#111827] border border-slate-800 rounded-2xl shadow-2xl overflow-hidden grid grid-cols-1 md:grid-cols-3 hidden">
         
         <div class="p-6 bg-[#161f30] border-b md:border-b-0 md:border-r border-slate-800 flex flex-col justify-between gap-6">
@@ -389,15 +369,6 @@
         const historyEmpty = document.getElementById('history-empty');
         const historyList = document.getElementById('history-list');
 
-        const emailConfirmationModal = document.getElementById('email-confirmation-modal');
-        const confirmModalEmail = document.getElementById('confirm-modal-email');
-        const closeConfirmModalBtn = document.getElementById('close-confirm-modal-btn');
-
-        closeConfirmModalBtn.addEventListener('click', () => {
-            emailConfirmationModal.classList.add('hidden');
-            showLandingScreen();
-        });
-
         function navigateToAuth(wantsSignup = false) {
             landingContainer.classList.add('hidden');
             authContainer.classList.remove('hidden');
@@ -501,13 +472,16 @@
                         }
                     }
                 });
-                if (error) alert(`Registration Error: ${error.message}`);
-                else {
+                
+                if (error) {
+                    alert(`Registration Error: ${error.message}`);
+                } else {
+                    // Alert the user and immediately flip them to the log in layout context
+                    alert("🎉 Account created successfully! Please sign in with your new credentials.");
+                    
                     authForm.reset();
-                    confirmModalEmail.textContent = email;
-                    authContainer.classList.add('hidden');
-                    emailConfirmationModal.classList.remove('hidden');
-                    lucide.createIcons();
+                    isSignUpMode = false;
+                    updateAuthInterfaceStrings();
                 }
             } else {
                 const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
