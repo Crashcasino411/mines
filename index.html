@@ -135,7 +135,6 @@
         <p id="auth-subtitle" class="text-center text-xs text-slate-400 mb-6">Sign in to sync your secure vault balance</p>
         
         <form id="auth-form" class="space-y-4">
-            <!-- DYNAMIC USERNAME FIELD (SHOWS ONLY ON SIGNUP) -->
             <div id="username-wrapper" class="hidden">
                 <label class="block text-xs font-semibold mb-2 text-slate-400 uppercase tracking-wider">Username</label>
                 <input type="text" id="auth-username" class="w-full bg-[#161f30] border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Choose a username">
@@ -148,7 +147,6 @@
                 <label class="block text-xs font-semibold mb-2 text-slate-400 uppercase tracking-wider">Password</label>
                 <input type="password" id="auth-password" class="w-full bg-[#161f30] border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 transition" required>
             </div>
-            <!-- DYNAMIC PASSWORD CONFIRMATION FIELD (SHOWS ONLY ON SIGNUP) -->
             <div id="confirm-password-wrapper" class="hidden">
                 <label class="block text-xs font-semibold mb-2 text-slate-400 uppercase tracking-wider">Confirm Password</label>
                 <input type="password" id="auth-confirm-password" class="w-full bg-[#161f30] border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 transition">
@@ -280,11 +278,46 @@
                             <label class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider">Amount to Withdraw (₦)</label>
                             <input id="wit-amount" type="number" min="1000" placeholder="Minimum ₦1,000" class="w-full bg-[#0b0f19] border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 text-sm" required>
                         </div>
+                        
                         <div>
-                            <label class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider">Bank Details</label>
-                            <textarea id="wit-details" rows="3" placeholder="Bank Name, Account Number, Full Account Name" class="w-full bg-[#0b0f19] border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 text-sm" required></textarea>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider">Select Destination Bank</label>
+                            <select id="wit-bank" class="w-full bg-[#0b0f19] border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 text-sm cursor-pointer" required>
+                                <option value="" disabled selected>Choose your bank...</option>
+                                <option value="Access Bank">Access Bank</option>
+                                <option value="GTBank">Guaranty Trust Bank (GTB)</option>
+                                <option value="United Bank for Africa">United Bank for Africa (UBA)</option>
+                                <option value="Zenith Bank">Zenith Bank</option>
+                                <option value="Opay">OPay Digital Services</option>
+                                <option value="Palmpay">PalmPay</option>
+                                <option value="Moniepoint">Moniepoint Microfinance</option>
+                                <option value="Kuda Bank">Kuda Bank</option>
+                            </select>
                         </div>
-                        <button type="submit" class="w-full bg-amber-500 hover:bg-amber-400 text-[#0b0f19] font-bold py-3 rounded-xl transition text-sm shadow-md">Request Manual Payout</button>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider">Account Number</label>
+                            <input id="wit-account-number" type="text" maxlength="10" pattern="\d{10}" placeholder="10-digit NUBAN account number" class="w-full bg-[#0b0f19] border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 text-sm" required>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider">Account Name</label>
+                            <input id="wit-account-name" type="text" placeholder="Full name registered to bank account" class="w-full bg-[#0b0f19] border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 text-sm" required>
+                        </div>
+
+                        <div class="bg-[#0b0f19] border border-slate-800/80 rounded-xl p-3 space-y-1.5 text-xs">
+                            <div class="flex justify-between">
+                                <span class="text-slate-500">Processing Fee (Flat):</span>
+                                <span class="text-slate-400">₦100.00</span>
+                            </div>
+                            <div class="flex justify-between font-bold border-t border-slate-800/80 pt-1.5">
+                                <span class="text-slate-400">Net Settlement Payout:</span>
+                                <span id="wit-net-payout" class="text-amber-400">₦0.00</span>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full bg-amber-500 hover:bg-amber-400 text-[#0b0f19] font-bold py-3 rounded-xl transition text-sm shadow-md flex items-center justify-center gap-2">
+                            <i data-lucide="send" class="w-4 h-4"></i> Request Secure Payout
+                        </button>
                     </form>
                 </div>
 
@@ -727,15 +760,34 @@
             }
         });
 
+        // Dynamic Fee Live-Calculation Event Listener
+        document.getElementById('wit-amount').addEventListener('input', function(e) {
+            const amount = parseFloat(e.target.value) || 0;
+            const netDisplay = document.getElementById('wit-net-payout');
+            
+            if (amount >= 1000) {
+                const netPayout = amount - 100;
+                netDisplay.textContent = `₦${netPayout.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+            } else {
+                netDisplay.textContent = "₦0.00";
+            }
+        });
+
+        // Upgraded Standard Withdrawal Form Handler
         withdrawForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const amount = parseFloat(document.getElementById('wit-amount').value);
-            const details = document.getElementById('wit-details').value;
+            const bank = document.getElementById('wit-bank').value;
+            const accountNumber = document.getElementById('wit-account-number').value;
+            const accountName = document.getElementById('wit-account-name').value;
 
             if (amount > currentBalance) {
                 alert("❌ Insufficient funds available to fulfill this withdrawal request!");
                 return;
             }
+
+            // Group input variations seamlessly to maintain database integrity rules
+            const structuredDetails = `Bank: ${bank} | Acc No: ${accountNumber} | Name: ${accountName}`;
 
             const { data: { user } } = await supabaseClient.auth.getUser();
             
@@ -746,7 +798,7 @@
                 user_id: user.id,
                 type: 'withdrawal',
                 amount: amount,
-                account_details: details,
+                account_details: structuredDetails,
                 status: 'pending'
             });
 
@@ -754,8 +806,9 @@
                 alert("Submission failed: " + error.message);
                 await updateDatabaseWalletBalance(currentBalance + amount);
             } else {
-                alert("💸 Withdrawal logged! The requested amount has been held in escrow and will be paid manually.");
+                alert(`💸 Withdrawal Request Sent!\n\nYour account has been debited. Our compliance desk will process ₦${(amount - 100).toLocaleString()} to your ${bank} account manually.`);
                 withdrawForm.reset();
+                document.getElementById('wit-net-payout').textContent = "₦0.00";
                 walletModal.classList.add('hidden');
             }
         });
