@@ -91,19 +91,16 @@
 </head>
 <body class="text-slate-200 min-h-screen flex flex-col items-center justify-center p-3 md:p-6">
 
-    <!-- UPGRADE: ALGORITHMIC REALISTIC LIVE PAYOUT PROOF MARQUEE TICKER -->
     <div class="fixed top-0 left-0 w-full bg-[#111827]/90 backdrop-blur-md border-b border-slate-800/60 z-40 h-9 overflow-hidden flex items-center">
         <div class="absolute left-0 h-full bg-[#0b0f19] px-3 flex items-center border-r border-slate-800 text-[10px] uppercase font-bold tracking-widest text-emerald-400 z-50 gap-1.5 shrink-0">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span> Live Activity
         </div>
         <div class="w-full overflow-hidden pl-[125px]">
             <div id="ticker-marquee-inner" class="animate-marquee text-[11px] text-slate-400 font-medium tracking-wide space-x-12 flex items-center whitespace-nowrap">
-                <!-- Generates dynamically via JS initialization loop -->
-            </div>
+                </div>
         </div>
     </div>
 
-    <!-- TOAST NOTIFICATION CONTAINER -->
     <div id="toast-container" class="fixed top-12 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
 
     <div id="landing-container" class="w-full max-w-5xl mx-auto flex flex-col gap-12 py-12 mt-6 hidden">
@@ -215,13 +212,20 @@
                 <label class="block text-xs font-semibold mb-2 text-slate-400 uppercase tracking-wider">Username</label>
                 <input type="text" id="auth-username" class="w-full bg-[#161f30] border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Choose a username">
             </div>
-            <div>
+            <div id="email-wrapper">
                 <label class="block text-xs font-semibold mb-2 text-slate-400 uppercase tracking-wider">Email Address</label>
                 <input type="email" id="auth-email" class="w-full bg-[#161f30] border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 transition" required>
             </div>
-            <div>
+            <div id="password-wrapper">
                 <label class="block text-xs font-semibold mb-2 text-slate-400 uppercase tracking-wider">Password</label>
                 <input type="password" id="auth-password" class="w-full bg-[#161f30] border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 transition" required>
+                <div id="forgot-password-link-wrapper" class="text-right mt-1.5">
+                    <button type="button" id="forgot-password-trigger" class="text-xs text-emerald-400 font-medium hover:underline transition">Forgot Password?</button>
+                </div>
+            </div>
+            <div id="new-password-wrapper" class="hidden">
+                <label class="block text-xs font-semibold mb-2 text-slate-400 uppercase tracking-wider">New Password</label>
+                <input type="password" id="auth-new-password" class="w-full bg-[#161f30] border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Minimum 6 characters">
             </div>
             <div id="confirm-password-wrapper" class="hidden">
                 <label class="block text-xs font-semibold mb-2 text-slate-400 uppercase tracking-wider">Confirm Password</label>
@@ -237,10 +241,8 @@
         </p>
     </div>
 
-    <!-- MAIN APP WRAPPER -->
     <div id="game-container" class="w-full max-w-5xl flex flex-col gap-4 hidden mt-8">
         
-        <!-- MAIN DASHBOARD SPLIT -->
         <div class="w-full bg-[#111827] border border-slate-800 rounded-2xl shadow-2xl overflow-hidden grid grid-cols-1 md:grid-cols-3">
             
             <div class="p-6 bg-[#161f30] border-b md:border-b-0 md:border-r border-slate-800 flex flex-col justify-between gap-6">
@@ -323,14 +325,11 @@
                 </div>
             </div>
 
-            <!-- CORE CANVAS BOARD CONTAINER WITH ADDED MULTIPLIER HISTORY RIBBON -->
             <div id="main-board-panel" class="col-span-2 p-6 md:p-10 flex flex-col items-center justify-center bg-[#0d1321] transition-all duration-300 gap-6">
                 
-                <!-- NEW ENHANCEMENT: SLEEK RECENT MULTIPLIERS RIBBON -->
                 <div class="w-full max-w-[400px] flex flex-col gap-1.5">
                     <span class="text-[9px] uppercase font-bold tracking-widest text-slate-500 block">Session History</span>
                     <div id="multiplier-history-ribbon" class="w-full flex items-center gap-2 overflow-hidden py-1 h-8">
-                        <!-- Instantiates empty fallback state badges -->
                         <span class="text-[10px] text-slate-600 font-semibold italic">Waiting for execution variables...</span>
                     </div>
                 </div>
@@ -373,7 +372,6 @@
         </div>
     </div>
 
-    <!-- CASH DESK MODAL -->
     <div id="wallet-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 items-center justify-center p-4 hidden flex">
         <div class="bg-[#111827] border border-slate-800 w-full max-w-md rounded-2xl overflow-hidden shadow-2xl flex flex-col">
             <div class="p-5 border-b border-slate-800 flex justify-between items-center bg-[#161f30]">
@@ -482,6 +480,8 @@
         let isGameActive = false;
         let currentBalance = 0.00; 
         let isSignUpMode = false;
+        let isForgotPasswordMode = false;
+        let isRecoveryMode = false;
         let currentUserSession = null;
         let activeBackendGameId = null;
         let currentSystemNonce = 0;
@@ -626,6 +626,7 @@
             landingContainer.classList.add('hidden');
             authContainer.classList.remove('hidden');
             isSignUpMode = wantsSignup;
+            isForgotPasswordMode = false;
             updateAuthInterfaceStrings();
         }
 
@@ -636,8 +637,26 @@
             lucide.createIcons();
         }
 
+        function toggleForgotPasswordMode(activate) {
+            isForgotPasswordMode = activate;
+            isSignUpMode = false;
+            updateAuthInterfaceStrings();
+        }
+
         async function checkUserSession() {
             initializeAlgorithmicTicker();
+
+            // Detect Returning Password Recovery Tokens in URL Hash or Parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('type') === 'recovery' || window.location.hash.includes('type=recovery')) {
+                isRecoveryMode = true;
+                landingContainer.classList.add('hidden');
+                gameContainer.classList.add('hidden');
+                authContainer.classList.remove('hidden');
+                updateAuthInterfaceStrings();
+                return;
+            }
+
             try {
                 const { data: { session }, error } = await supabaseClient.auth.getSession();
                 if (error) throw error;
@@ -668,7 +687,35 @@
         }
 
         function updateAuthInterfaceStrings() {
-            if (isSignUpMode) {
+            authToggleText.classList.remove('hidden');
+            document.getElementById('email-wrapper').classList.remove('hidden');
+            document.getElementById('password-wrapper').classList.remove('hidden');
+            document.getElementById('new-password-wrapper').classList.add('hidden');
+            usernameWrapper.classList.add('hidden');
+            confirmPasswordWrapper.classList.add('hidden');
+            authUsername.required = false;
+            authConfirmPassword.required = false;
+            authEmail.required = true;
+            authPassword.required = true;
+
+            if (isRecoveryMode) {
+                authTitle.textContent = "Create New Password";
+                authSubtitle.textContent = "Secure your vault with a brand new authentication key";
+                authSubmitBtn.textContent = "Update Password & Secure Vault";
+                authToggleText.classList.add('hidden');
+                document.getElementById('email-wrapper').classList.add('hidden');
+                document.getElementById('password-wrapper').classList.add('hidden');
+                document.getElementById('new-password-wrapper').classList.remove('hidden');
+                authEmail.required = false;
+                authPassword.required = false;
+            } else if (isForgotPasswordMode) {
+                authTitle.textContent = "Reset Password";
+                authSubtitle.textContent = "Enter your email to receive a secure recovery link";
+                authSubmitBtn.textContent = "Send Reset Link";
+                document.getElementById('password-wrapper').classList.add('hidden');
+                authPassword.required = false;
+                authToggleText.innerHTML = `Remembered your keys? <button type="button" onclick="toggleForgotPasswordMode(false)" class="text-emerald-400 font-bold hover:underline">Sign In</button>`;
+            } else if (isSignUpMode) {
                 authTitle.textContent = "Create Account";
                 authSubtitle.textContent = "Fund your account after registration to play";
                 authSubmitBtn.textContent = "Register & Play";
@@ -683,26 +730,68 @@
                 authSubtitle.textContent = "Sign in to sync your secure vault balance";
                 authSubmitBtn.textContent = "Sign In";
                 authToggleText.innerHTML = `New player? <button type="button" id="auth-toggle-btn" class="text-emerald-400 font-bold hover:underline">Create Account</button>`;
-                
-                usernameWrapper.classList.add('hidden');
-                confirmPasswordWrapper.classList.add('hidden');
-                authUsername.required = false;
-                authConfirmPassword.required = false;
             }
-            document.getElementById('auth-toggle-btn').addEventListener('click', () => authToggleBtn.click());
+
+            const toggleBtn = document.getElementById('auth-toggle-btn');
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', () => {
+                    isSignUpMode = !isSignUpMode;
+                    isForgotPasswordMode = false;
+                    updateAuthInterfaceStrings();
+                });
+            }
             lucide.createIcons();
         }
 
-        authToggleBtn.addEventListener('click', () => {
-            isSignUpMode = !isSignUpMode;
-            updateAuthInterfaceStrings();
+        document.getElementById('forgot-password-trigger').addEventListener('click', () => {
+            toggleForgotPasswordMode(true);
         });
 
         authForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = authEmail.value;
+
+            // STATE 1: Password Recovery Request Dispatched
+            if (isForgotPasswordMode) {
+                const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+                    redirectTo: window.location.origin + window.location.pathname + '?type=recovery',
+                });
+                
+                if (error) {
+                    showNotification(`Reset Error: ${error.message}`, false);
+                } else {
+                    showNotification("Recovery matrix dispatched! Check your email inbox.");
+                    toggleForgotPasswordMode(false);
+                }
+                return;
+            }
+
+            // STATE 2: New Password Settlement Action
+            if (isRecoveryMode) {
+                const newPassword = document.getElementById('auth-new-password').value;
+                if (!newPassword || newPassword.length < 6) {
+                    showNotification("Password must be at least 6 characters long.", false);
+                    return;
+                }
+
+                const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
+                
+                if (error) {
+                    showNotification(`Update Failed: ${error.message}`, false);
+                } else {
+                    showNotification("Password updated successfully! You can now sign in.");
+                    isRecoveryMode = false;
+                    toggleForgotPasswordMode(false);
+                    
+                    // Clean parameters out of URL
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }
+                return;
+            }
+
             const password = authPassword.value;
 
+            // STATE 3: Standard Registration Protocol
             if (isSignUpMode) {
                 const username = authUsername.value.trim();
                 const confirmPassword = authConfirmPassword.value;
@@ -729,6 +818,7 @@
                     updateAuthInterfaceStrings();
                 }
             } else {
+                // STATE 4: Secure Handshake Login Authentication
                 const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
                 if (error) showNotification(`Login Failed: ${error.message}`, false);
                 else {
