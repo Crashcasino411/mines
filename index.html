@@ -13,13 +13,9 @@
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: #0b0f19;
-            overflow-x: hidden;
         }
-        
-        /* 3D Tile Flip Animation Setup */
         .grid-tile {
-            perspective: 1000px;
-            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s;
         }
         .grid-tile:not(:disabled):hover {
             transform: translateY(-2px);
@@ -27,83 +23,14 @@
         .grid-tile:not(:disabled):active {
             transform: scale(0.95);
         }
-        .tile-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            text-align: center;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            transform-style: preserve-3d;
-        }
-        .tile-flipped .tile-inner {
-            transform: rotateY(180deg);
-        }
-        .tile-front, .tile-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
-            border-radius: 12px;
-            display: flex;
-            items-center: center;
-            justify-content: center;
-        }
-        .tile-back {
-            transform: rotateY(180deg);
-        }
-
-        /* Continuous Dynamic Live Ticker Animation */
-        @keyframes marquee {
-            0% { transform: translateX(0%); }
-            100% { transform: translateX(-33.33%); }
-        }
-        .animate-marquee {
-            display: flex;
-            width: max-content;
-            animation: marquee 45s linear infinite;
-        }
-        .animate-marquee:hover {
-            animation-play-state: paused;
-        }
-
-        /* Pulse and Spark Effects */
         .neon-glow {
-            box-shadow: 0 0 25px rgba(16, 185, 129, 0.12);
-        }
-        .win-glow-burst {
-            animation: winBurst 0.6s ease-out forwards;
-        }
-        @keyframes winBurst {
-            0% { box-shadow: 0 0 0px 0px rgba(245, 158, 11, 0.4); }
-            100% { box-shadow: 0 0 30px 15px rgba(245, 158, 11, 0); }
-        }
-
-        /* Premium Toast Animation */
-        @keyframes slideInToast {
-            0% { transform: translateX(120%); opacity: 0; }
-            100% { transform: translateX(0); opacity: 1; }
-        }
-        .toast-animate {
-            animation: slideInToast 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.25) forwards;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);
         }
     </style>
 </head>
-<body class="text-slate-200 min-h-screen flex flex-col items-center justify-center p-3 md:p-6">
+<body class="text-slate-200 min-h-screen flex items-center justify-center p-4 md:p-8">
 
-    <div class="fixed top-0 left-0 w-full bg-[#111827]/90 backdrop-blur-md border-b border-slate-800/60 z-40 h-9 overflow-hidden flex items-center">
-        <div class="absolute left-0 h-full bg-[#0b0f19] px-3 flex items-center border-r border-slate-800 text-[10px] uppercase font-bold tracking-widest text-emerald-400 z-50 gap-1.5 shrink-0">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span> Live Activity
-        </div>
-        <div class="w-full overflow-hidden pl-[125px]">
-            <div id="ticker-marquee-inner" class="animate-marquee text-[11px] text-slate-400 font-medium tracking-wide space-x-12 flex items-center whitespace-nowrap">
-                </div>
-        </div>
-    </div>
-
-    <div id="toast-container" class="fixed top-12 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
-
-    <div id="landing-container" class="w-full max-w-5xl mx-auto flex flex-col gap-12 py-12 mt-6 hidden">
+    <div id="landing-container" class="w-full max-w-5xl mx-auto flex flex-col gap-12 py-8 hidden">
         <header class="flex items-center justify-between border-b border-slate-800/80 pb-6">
             <div class="flex items-center gap-3">
                 <div class="p-2.5 bg-emerald-500/10 rounded-xl text-emerald-400">
@@ -119,7 +46,7 @@
 
         <main class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
-                <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full text-emerald-400 text-xs font-semibold tracking-wide">
+                <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full text-emerald-400 text-xs font-semibold">
                     <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> 100% Server-Authoritative Logic
                 </div>
                 <h2 class="text-4xl md:text-5xl font-extrabold text-white leading-[1.15] tracking-tight">
@@ -194,7 +121,7 @@
         </footer>
     </div>
 
-    <div id="auth-container" class="w-full max-w-md bg-[#111827] border border-slate-800 rounded-2xl p-8 shadow-2xl relative hidden mt-6">
+    <div id="auth-container" class="w-full max-w-md bg-[#111827] border border-slate-800 rounded-2xl p-8 shadow-2xl relative hidden">
         <button onclick="showLandingScreen()" class="absolute top-6 left-6 flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-emerald-400 transition bg-slate-800/40 hover:bg-slate-800 border border-slate-700/60 px-3 py-1.5 rounded-lg">
             <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Back
         </button>
@@ -212,20 +139,13 @@
                 <label class="block text-xs font-semibold mb-2 text-slate-400 uppercase tracking-wider">Username</label>
                 <input type="text" id="auth-username" class="w-full bg-[#161f30] border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Choose a username">
             </div>
-            <div id="email-wrapper">
+            <div>
                 <label class="block text-xs font-semibold mb-2 text-slate-400 uppercase tracking-wider">Email Address</label>
                 <input type="email" id="auth-email" class="w-full bg-[#161f30] border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 transition" required>
             </div>
-            <div id="password-wrapper">
+            <div>
                 <label class="block text-xs font-semibold mb-2 text-slate-400 uppercase tracking-wider">Password</label>
                 <input type="password" id="auth-password" class="w-full bg-[#161f30] border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 transition" required>
-                <div id="forgot-password-link-wrapper" class="text-right mt-1.5">
-                    <button type="button" id="forgot-password-trigger" class="text-xs text-emerald-400 font-medium hover:underline transition">Forgot Password?</button>
-                </div>
-            </div>
-            <div id="new-password-wrapper" class="hidden">
-                <label class="block text-xs font-semibold mb-2 text-slate-400 uppercase tracking-wider">New Password</label>
-                <input type="password" id="auth-new-password" class="w-full bg-[#161f30] border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Minimum 6 characters">
             </div>
             <div id="confirm-password-wrapper" class="hidden">
                 <label class="block text-xs font-semibold mb-2 text-slate-400 uppercase tracking-wider">Confirm Password</label>
@@ -241,133 +161,83 @@
         </p>
     </div>
 
-    <div id="game-container" class="w-full max-w-5xl flex flex-col gap-4 hidden mt-8">
+    <div id="game-container" class="w-full max-w-4xl bg-[#111827] border border-slate-800 rounded-2xl shadow-2xl overflow-hidden grid grid-cols-1 md:grid-cols-3 hidden">
         
-        <div class="w-full bg-[#111827] border border-slate-800 rounded-2xl shadow-2xl overflow-hidden grid grid-cols-1 md:grid-cols-3">
-            
-            <div class="p-6 bg-[#161f30] border-b md:border-b-0 md:border-r border-slate-800 flex flex-col justify-between gap-6">
-                <div class="space-y-5">
-                    <div class="flex items-center justify-between border-b border-slate-800 pb-4">
-                        <div class="flex items-center gap-3">
-                            <div class="p-2 bg-emerald-500/10 rounded-lg text-emerald-400">
-                                <i data-lucide="gem" class="w-6 h-6"></i>
+        <div class="p-6 bg-[#161f30] border-b md:border-b-0 md:border-r border-slate-800 flex flex-col justify-between gap-6">
+            <div class="space-y-6">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2 bg-emerald-500/10 rounded-lg text-emerald-400">
+                            <i data-lucide="gem" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-xl font-bold tracking-tight text-white">MINE<span class="text-emerald-400">BLAST</span></h1>
+                            <p id="user-welcome" class="text-[11px] text-slate-400 truncate max-w-[120px]"></p>
+                        </div>
+                    </div>
+                    <button id="logout-btn" title="Sign Out" class="text-slate-500 hover:text-red-400 p-2 rounded-lg hover:bg-slate-800/50 transition">
+                        <i data-lucide="log-out" class="w-4 h-4"></i>
+                    </button>
+                </div>
+
+                <div class="p-4 bg-[#0b0f19] border border-slate-800 rounded-xl p-3 flex flex-col gap-3">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <div class="text-amber-400 bg-amber-500/10 p-2 rounded-lg">
+                                <i data-lucide="wallet" class="w-5 h-5"></i>
                             </div>
                             <div>
-                                <h1 class="text-xl font-bold tracking-tight text-white">MINE<span class="text-emerald-400">BLAST</span></h1>
-                                <p id="user-welcome" class="text-[11px] text-slate-400 truncate max-w-[120px] font-medium tracking-wide"></p>
+                                <p class="text-[10px] uppercase tracking-wider font-semibold text-slate-400">Database Balance</p>
+                                <p id="balance-display" class="text-lg font-bold text-white">₦0.00</p>
                             </div>
                         </div>
-                        <button id="logout-btn" title="Sign Out" class="text-slate-500 hover:text-red-400 p-2 rounded-lg hover:bg-slate-800/50 transition">
-                            <i data-lucide="log-out" class="w-4 h-4"></i>
-                        </button>
                     </div>
+                    <button id="open-wallet-btn" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold py-2 rounded-lg transition border border-slate-700/60 flex items-center justify-center gap-1.5">
+                        <i data-lucide="arrow-left-right" class="w-3.5 h-3.5"></i> Deposit / Withdraw
+                    </button>
+                </div>
 
-                    <div class="p-4 bg-[#0b0f19] border border-slate-800 rounded-xl flex flex-col gap-3">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-2.5">
-                                <div class="text-amber-400 bg-amber-500/10 p-2 rounded-lg">
-                                    <i data-lucide="wallet" class="w-5 h-5"></i>
-                                </div>
-                                <div>
-                                    <p class="text-[10px] uppercase tracking-wider font-bold text-slate-500">Database Balance</p>
-                                    <p id="balance-display" class="text-lg font-bold text-white">₦0.00</p>
-                                </div>
-                            </div>
-                        </div>
-                        <button id="open-wallet-btn" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold py-2.5 rounded-lg transition border border-slate-700/60 flex items-center justify-center gap-1.5">
-                            <i data-lucide="arrow-left-right" class="w-3.5 h-3.5"></i> Deposit / Withdraw
-                        </button>
-                    </div>
-
-                    <div class="space-y-2">
-                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Bet Amount (Min 5k / Max 150k)</label>
-                        <div class="relative rounded-xl bg-[#0b0f19] border border-slate-700 focus-within:border-emerald-500 transition p-3 flex items-center justify-between mb-1.5">
-                            <span class="text-xs font-bold text-slate-500">₦</span>
-                            <input id="bet-input" type="number" value="5000" min="5000" max="150000" class="bg-transparent text-white font-bold w-full focus:outline-none px-2 text-right text-sm">
-                        </div>
-                        
-                        <div class="grid grid-cols-4 gap-1.5">
-                            <button type="button" onclick="handleQuickBetAction('min')" class="bg-slate-800 hover:bg-slate-700 border border-slate-700/50 rounded-lg text-[10px] font-bold py-1.5 transition uppercase tracking-wide text-slate-300">Min</button>
-                            <button type="button" onclick="handleQuickBetAction('half')" class="bg-slate-800 hover:bg-slate-700 border border-slate-700/50 rounded-lg text-[10px] font-bold py-1.5 transition uppercase tracking-wide text-slate-300">½</button>
-                            <button type="button" onclick="handleQuickBetAction('double')" class="bg-slate-800 hover:bg-slate-700 border border-slate-700/50 rounded-lg text-[10px] font-bold py-1.5 transition uppercase tracking-wide text-slate-300">2x</button>
-                            <button type="button" onclick="handleQuickBetAction('max')" class="bg-slate-800 hover:bg-slate-700 border border-slate-700/50 rounded-lg text-[10px] font-bold py-1.5 transition uppercase tracking-wide text-slate-300">Max</button>
-                        </div>
-                    </div>
-
-                    <div class="space-y-2">
-                        <div class="flex justify-between text-xs font-bold text-slate-400 uppercase tracking-wider">
-                            <label>Mines Count</label>
-                            <span id="mines-count-display" class="text-emerald-400 font-bold">3</span>
-                        </div>
-                        <select id="mines-select" class="w-full bg-[#0b0f19] border border-slate-700 rounded-xl p-3 font-semibold text-white focus:outline-none focus:border-emerald-500 cursor-pointer text-sm">
-                        </select>
+                <div class="space-y-2">
+                    <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Bet Amount (Min 5k / Max 150k)</label>
+                    <div class="relative rounded-xl bg-[#0b0f19] border border-slate-700 focus-within:border-emerald-500 transition p-3 flex items-center justify-between">
+                        <span class="text-xs font-bold text-slate-500">₦</span>
+                        <input id="bet-input" type="number" value="5000" min="5000" max="150000" class="bg-transparent text-white font-bold w-full focus:outline-none px-2 text-right">
                     </div>
                 </div>
 
-                <div class="space-y-4 pt-4 md:pt-0">
-                    <div id="game-stats" class="hidden grid grid-cols-2 gap-2 p-2.5 bg-[#0b0f19] rounded-xl border border-slate-800/80">
-                        <div class="p-2 bg-slate-900/40 border border-slate-800/40 rounded-lg text-center">
-                            <span class="block text-[9px] font-bold text-slate-500 uppercase tracking-wider mb-0.5">Current Unlocked</span>
-                            <span id="stat-profit" class="text-sm font-extrabold text-emerald-400">₦0.00</span>
-                        </div>
-                        <div class="p-2 bg-slate-900/40 border border-slate-800/40 rounded-lg text-center">
-                            <span class="block text-[9px] font-bold text-slate-500 uppercase tracking-wider mb-0.5">Next Step</span>
-                            <span id="stat-multiplier" class="text-sm font-extrabold text-amber-400">1.00x</span>
-                        </div>
+                <div class="space-y-2">
+                    <div class="flex justify-between text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                        <label>Mines</label>
+                        <span id="mines-count-display" class="text-emerald-400 font-bold">3</span>
                     </div>
+                    <select id="mines-select" class="w-full bg-[#0b0f19] border border-slate-700 rounded-xl p-3 font-medium text-white focus:outline-none focus:border-emerald-500 cursor-pointer">
+                    </select>
+                </div>
 
-                    <button id="primary-btn" class="w-full bg-emerald-500 hover:bg-emerald-400 active:bg-emerald-600 text-[#0b0f19] font-bold py-3.5 px-6 rounded-xl transition shadow-lg shadow-emerald-500/10 flex items-center justify-center gap-2 text-sm uppercase tracking-wider">
-                        Deploy Stake
-                    </button>
-                    <button id="cashout-btn" class="hidden w-full bg-amber-500 hover:bg-amber-400 text-[#0b0f19] font-bold py-3.5 px-6 rounded-xl transition shadow-lg shadow-amber-500/10 flex items-center justify-center gap-2 text-sm uppercase tracking-wider">
-                        Secure Cashout
-                    </button>
+                <div id="game-stats" class="hidden space-y-3 p-4 bg-[#0b0f19]/50 rounded-xl border border-slate-800">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-slate-400">Current Profit:</span>
+                        <span id="stat-profit" class="font-bold text-emerald-400">₦0.00</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-slate-400">Next Multiplier:</span>
+                        <span id="stat-multiplier" class="font-bold text-slate-300">1.00x</span>
+                    </div>
                 </div>
             </div>
 
-            <div id="main-board-panel" class="col-span-2 p-6 md:p-10 flex flex-col items-center justify-center bg-[#0d1321] transition-all duration-300 gap-6">
-                
-                <div class="w-full max-w-[400px] flex flex-col gap-1.5">
-                    <span class="text-[9px] uppercase font-bold tracking-widest text-slate-500 block">Session History</span>
-                    <div id="multiplier-history-ribbon" class="w-full flex items-center gap-2 overflow-hidden py-1 h-8">
-                        <span class="text-[10px] text-slate-600 font-semibold italic">Waiting for execution variables...</span>
-                    </div>
-                </div>
-
-                <div id="grid-container" class="grid grid-cols-5 gap-3 w-full max-w-[400px] aspect-square"></div>
+            <div class="space-y-3">
+                <button id="primary-btn" class="w-full bg-emerald-500 hover:bg-emerald-400 active:bg-emerald-600 text-[#0b0f19] font-bold py-4 px-6 rounded-xl transition shadow-lg shadow-emerald-500/10 flex items-center justify-center gap-2 text-md">
+                    Bet
+                </button>
+                <button id="cashout-btn" class="hidden w-full bg-amber-500 hover:bg-amber-400 text-[#0b0f19] font-bold py-4 px-6 rounded-xl transition shadow-lg shadow-amber-500/10 flex items-center justify-center gap-2 text-md">
+                    Cashout
+                </button>
             </div>
         </div>
 
-        <div class="w-full bg-[#111827] border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-3 gap-2">
-                <div class="flex items-center gap-2">
-                    <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
-                    <h4 class="text-xs font-bold uppercase tracking-wider text-white">Cryptographic Provably Fair Engine</h4>
-                </div>
-                <span class="text-[9px] uppercase font-bold tracking-widest text-slate-500 bg-[#0b0f19] px-2 py-0.5 border border-slate-800 rounded-md self-start sm:self-auto">SHA-256 Validated</span>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-[11px]">
-                <div class="space-y-1">
-                    <span class="block font-semibold text-slate-500 uppercase tracking-wide">Active Hashed Server Seed</span>
-                    <div class="bg-[#0b0f19] border border-slate-800/80 rounded-lg p-2 font-mono text-slate-400 truncate tracking-tight select-all cursor-pointer" title="Click to copy hash">
-                        f50a863e0202976b962a8db5a9a8caba433af50a863e0202976b962a8db5a
-                    </div>
-                </div>
-                <div class="space-y-1">
-                    <span class="block font-semibold text-slate-500 uppercase tracking-wide">Client Seed (Ephemeral Vector)</span>
-                    <div class="bg-[#0b0f19] border border-slate-800/80 rounded-lg p-2 font-mono text-slate-400 truncate tracking-tight flex items-center justify-between">
-                        <span>mineblast_session_client_rev2</span>
-                        <i data-lucide="shuffle" class="w-3 h-3 text-slate-600"></i>
-                    </div>
-                </div>
-                <div class="space-y-1">
-                    <span class="block font-semibold text-slate-500 uppercase tracking-wide">Relational System Nonce</span>
-                    <div class="bg-[#0b0f19] border border-slate-800/80 rounded-lg p-2 font-mono text-slate-400 flex items-center justify-between">
-                        <span id="provably-nonce-counter">0</span>
-                        <span class="text-[9px] font-bold uppercase bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-1.5 py-0.2 rounded">Synchronized</span>
-                    </div>
-                </div>
+        <div class="col-span-2 p-6 md:p-12 flex flex-col items-center justify-center bg-[#0d1321]">
+            <div id="grid-container" class="grid grid-cols-5 gap-3 w-full max-w-[420px] aspect-square">
             </div>
         </div>
     </div>
@@ -480,14 +350,10 @@
         let isGameActive = false;
         let currentBalance = 0.00; 
         let isSignUpMode = false;
-        let isForgotPasswordMode = false;
-        let isRecoveryMode = false;
         let currentUserSession = null;
         let activeBackendGameId = null;
-        let currentSystemNonce = 0;
         
         let tileElements = [];
-        let historicalMultipliers = [1.42, 0.00, 2.15, 1.88, 0.00, 4.35]; // Fallback initial history block entries
 
         const landingContainer = document.getElementById('landing-container');
         const authContainer = document.getElementById('auth-container');
@@ -536,97 +402,10 @@
         const historyEmpty = document.getElementById('history-empty');
         const historyList = document.getElementById('history-list');
 
-        // NEW ENHANCEMENT: SLEEK PREMIUM FLOATING TOAST CONTROLLER
-        function showNotification(message, isSuccess = true) {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = `toast-animate bg-[#161f30] border ${isSuccess ? 'border-emerald-500/40 shadow-emerald-500/5' : 'border-red-500/40 shadow-red-500/5'} px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 text-xs font-semibold text-white pointer-events-auto`;
-            
-            toast.innerHTML = `
-                <div class="p-1.5 rounded-lg ${isSuccess ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'}">
-                    <i data-lucide="${isSuccess ? 'check-circle' : 'alert-circle'}" class="w-4 h-4"></i>
-                </div>
-                <div class="flex-1">${message}</div>
-            `;
-            container.appendChild(toast);
-            lucide.createIcons();
-
-            setTimeout(() => {
-                toast.style.transform = 'translateX(120%)';
-                toast.style.opacity = '0';
-                toast.style.transition = 'all 0.3s ease-in-out';
-                setTimeout(() => toast.remove(), 300);
-            }, 3500);
-        }
-
-        // NEW ENHANCEMENT: ALGORITHMIC REAL-TIME PAYOUT TICKER SEED DATA
-        function initializeAlgorithmicTicker() {
-            const marqueeInner = document.getElementById('ticker-marquee-inner');
-            const userPrefixes = ['chidi_', 'tunde', 'olumide', 'femi_vibe', 'nneka_m', 'davido_fan', 'wiz_king', 'zi_dev', 'star_boy', 'khalil', 'seun', 'yinka', 'burna', 'tiwa_'];
-            const paymentGateways = ['OPay', 'PalmPay', 'Moniepoint', 'GTBank', 'Access Bank', 'Zenith Bank', 'Kuda'];
-            
-            function generateItemMarkup() {
-                const isWithdrawal = Math.random() > 0.45;
-                const randUser = userPrefixes[Math.floor(Math.random() * userPrefixes.length)] + Math.floor(Math.random() * 90 + 10);
-                const timeAgo = Math.floor(Math.random() * 12 + 1) + 'm ago';
-
-                if (isWithdrawal) {
-                    const amount = Math.floor(Math.random() * 145000 + 5000).toLocaleString();
-                    const gateway = paymentGateways[Math.floor(Math.random() * paymentGateways.length)];
-                    return `<span>● <strong class="text-white">${randUser}</strong> withdrew <span class="text-emerald-400 font-bold">₦${amount}</span> via ${gateway} <span class="text-slate-600 text-[10px]">(${timeAgo})</span></span>`;
-                } else {
-                    const mines = [3, 5, 8, 10, 1][Math.floor(Math.random() * 5)];
-                    const multiplier = (Math.random() * 14 + 1.2).toFixed(2);
-                    return `<span>● <strong class="text-white">${randUser}</strong> smashed <span class="text-amber-400 font-bold">${multiplier}x Multiplier</span> on ${mines} Mines <span class="text-slate-600 text-[10px]">(${timeAgo})</span></span>`;
-                }
-            }
-
-            // Populate the line 3 separate times inside the wrapper row to form an endless scroll cycle
-            let initialPayload = "";
-            for (let i = 0; i < 24; i++) {
-                initialPayload += generateItemMarkup();
-            }
-            marqueeInner.innerHTML = initialPayload;
-
-            // Silently cycle-inject elements sequentially every few seconds to prevent looping artifacts
-            setInterval(() => {
-                if (marqueeInner.children.length > 50) {
-                    marqueeInner.removeChild(marqueeInner.firstElementChild);
-                }
-                const ghostNode = document.createElement('div');
-                ghostNode.innerHTML = generateItemMarkup();
-                marqueeInner.appendChild(ghostNode.firstElementChild);
-            }, 6000);
-        }
-
-        // NEW ENHANCEMENT: RENDERS ACTIVE RECENT MULTIPLIER BADGE STRIPS
-        function renderMultiplierRibbon() {
-            const ribbon = document.getElementById('multiplier-history-ribbon');
-            ribbon.innerHTML = '';
-            
-            // Limit to the trailing 8 rounds max
-            const displayList = historicalMultipliers.slice(-8);
-            displayList.forEach(mult => {
-                const pill = document.createElement('span');
-                if (mult === 0.00) {
-                    pill.className = "px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-red-500/10 text-red-500 border border-red-500/20 shadow-sm";
-                    pill.textContent = "0.00x";
-                } else if (mult >= 3.00) {
-                    pill.className = "px-2.5 py-0.5 rounded-md text-[10px] font-extrabold bg-amber-500 text-[#0b0f19] border border-amber-400 shadow-md animate-pulse";
-                    pill.textContent = `${mult.toFixed(2)}x`;
-                } else {
-                    pill.className = "px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-sm";
-                    pill.textContent = `${mult.toFixed(2)}x`;
-                }
-                ribbon.appendChild(pill);
-            });
-        }
-
         function navigateToAuth(wantsSignup = false) {
             landingContainer.classList.add('hidden');
             authContainer.classList.remove('hidden');
             isSignUpMode = wantsSignup;
-            isForgotPasswordMode = false;
             updateAuthInterfaceStrings();
         }
 
@@ -637,26 +416,7 @@
             lucide.createIcons();
         }
 
-        function toggleForgotPasswordMode(activate) {
-            isForgotPasswordMode = activate;
-            isSignUpMode = false;
-            updateAuthInterfaceStrings();
-        }
-
         async function checkUserSession() {
-            initializeAlgorithmicTicker();
-
-            // Detect Returning Password Recovery Tokens in URL Hash or Parameters
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('type') === 'recovery' || window.location.hash.includes('type=recovery')) {
-                isRecoveryMode = true;
-                landingContainer.classList.add('hidden');
-                gameContainer.classList.add('hidden');
-                authContainer.classList.remove('hidden');
-                updateAuthInterfaceStrings();
-                return;
-            }
-
             try {
                 const { data: { session }, error } = await supabaseClient.auth.getSession();
                 if (error) throw error;
@@ -678,49 +438,22 @@
             authContainer.classList.add('hidden');
             gameContainer.classList.remove('hidden');
             
+            // Checks for custom username metadata, otherwise falls back to email string parsing splits
             const displayName = user.user_metadata?.username || user.email.split('@')[0];
             userWelcome.textContent = displayName;
             
             initGameBoard();
-            renderMultiplierRibbon();
             await syncProfileWallet();
         }
 
         function updateAuthInterfaceStrings() {
-            authToggleText.classList.remove('hidden');
-            document.getElementById('email-wrapper').classList.remove('hidden');
-            document.getElementById('password-wrapper').classList.remove('hidden');
-            document.getElementById('new-password-wrapper').classList.add('hidden');
-            usernameWrapper.classList.add('hidden');
-            confirmPasswordWrapper.classList.add('hidden');
-            authUsername.required = false;
-            authConfirmPassword.required = false;
-            authEmail.required = true;
-            authPassword.required = true;
-
-            if (isRecoveryMode) {
-                authTitle.textContent = "Create New Password";
-                authSubtitle.textContent = "Secure your vault with a brand new authentication key";
-                authSubmitBtn.textContent = "Update Password & Secure Vault";
-                authToggleText.classList.add('hidden');
-                document.getElementById('email-wrapper').classList.add('hidden');
-                document.getElementById('password-wrapper').classList.add('hidden');
-                document.getElementById('new-password-wrapper').classList.remove('hidden');
-                authEmail.required = false;
-                authPassword.required = false;
-            } else if (isForgotPasswordMode) {
-                authTitle.textContent = "Reset Password";
-                authSubtitle.textContent = "Enter your email to receive a secure recovery link";
-                authSubmitBtn.textContent = "Send Reset Link";
-                document.getElementById('password-wrapper').classList.add('hidden');
-                authPassword.required = false;
-                authToggleText.innerHTML = `Remembered your keys? <button type="button" onclick="toggleForgotPasswordMode(false)" class="text-emerald-400 font-bold hover:underline">Sign In</button>`;
-            } else if (isSignUpMode) {
+            if (isSignUpMode) {
                 authTitle.textContent = "Create Account";
                 authSubtitle.textContent = "Fund your account after registration to play";
                 authSubmitBtn.textContent = "Register & Play";
                 authToggleText.innerHTML = `Already have an account? <button type="button" id="auth-toggle-btn" class="text-emerald-400 font-bold hover:underline">Sign In</button>`;
                 
+                // Show custom signup fields and make them required dynamically
                 usernameWrapper.classList.remove('hidden');
                 confirmPasswordWrapper.classList.remove('hidden');
                 authUsername.required = true;
@@ -730,101 +463,65 @@
                 authSubtitle.textContent = "Sign in to sync your secure vault balance";
                 authSubmitBtn.textContent = "Sign In";
                 authToggleText.innerHTML = `New player? <button type="button" id="auth-toggle-btn" class="text-emerald-400 font-bold hover:underline">Create Account</button>`;
+                
+                // Hide custom signup fields and remove requirements to keep regular login working
+                usernameWrapper.classList.add('hidden');
+                confirmPasswordWrapper.classList.add('hidden');
+                authUsername.required = false;
+                authConfirmPassword.required = false;
             }
-
-            const toggleBtn = document.getElementById('auth-toggle-btn');
-            if (toggleBtn) {
-                toggleBtn.addEventListener('click', () => {
-                    isSignUpMode = !isSignUpMode;
-                    isForgotPasswordMode = false;
-                    updateAuthInterfaceStrings();
-                });
-            }
+            document.getElementById('auth-toggle-btn').addEventListener('click', () => authToggleBtn.click());
             lucide.createIcons();
         }
 
-        document.getElementById('forgot-password-trigger').addEventListener('click', () => {
-            toggleForgotPasswordMode(true);
+        authToggleBtn.addEventListener('click', () => {
+            isSignUpMode = !isSignUpMode;
+            updateAuthInterfaceStrings();
         });
 
         authForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = authEmail.value;
-
-            // STATE 1: Password Recovery Request Dispatched
-            if (isForgotPasswordMode) {
-                const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-                    redirectTo: window.location.origin + window.location.pathname + '?type=recovery',
-                });
-                
-                if (error) {
-                    showNotification(`Reset Error: ${error.message}`, false);
-                } else {
-                    showNotification("Recovery matrix dispatched! Check your email inbox.");
-                    toggleForgotPasswordMode(false);
-                }
-                return;
-            }
-
-            // STATE 2: New Password Settlement Action
-            if (isRecoveryMode) {
-                const newPassword = document.getElementById('auth-new-password').value;
-                if (!newPassword || newPassword.length < 6) {
-                    showNotification("Password must be at least 6 characters long.", false);
-                    return;
-                }
-
-                const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
-                
-                if (error) {
-                    showNotification(`Update Failed: ${error.message}`, false);
-                } else {
-                    showNotification("Password updated successfully! You can now sign in.");
-                    isRecoveryMode = false;
-                    toggleForgotPasswordMode(false);
-                    
-                    // Clean parameters out of URL
-                    window.history.replaceState({}, document.title, window.location.pathname);
-                }
-                return;
-            }
-
             const password = authPassword.value;
 
-            // STATE 3: Standard Registration Protocol
             if (isSignUpMode) {
                 const username = authUsername.value.trim();
                 const confirmPassword = authConfirmPassword.value;
 
+                // Stop form submission if passwords do not match
                 if (password !== confirmPassword) {
-                    showNotification("Passwords do not match! Please verify your entry.", false);
+                    alert("❌ Passwords do not match! Please check your entry and try again.");
                     return;
                 }
 
+                // Registers account while attaching the custom username option securely inside user_metadata
                 const { data, error } = await supabaseClient.auth.signUp({ 
                     email, 
                     password,
                     options: {
                         emailRedirectTo: window.location.origin,
-                        data: { username: username }
+                        data: {
+                            username: username
+                        }
                     }
                 });
                 
                 if (error) {
-                    showNotification(`Registration Error: ${error.message}`, false);
+                    alert(`Registration Error: ${error.message}`);
                 } else {
-                    showNotification("Account created! Please sign in with your credentials.");
+                    // Alert the user and immediately flip them to the log in layout context
+                    alert("🎉 Account created successfully! Please sign in with your new credentials.");
+                    
+                    authForm.reset();
                     isSignUpMode = false;
                     updateAuthInterfaceStrings();
                 }
             } else {
-                // STATE 4: Secure Handshake Login Authentication
                 const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-                if (error) showNotification(`Login Failed: ${error.message}`, false);
+                if (error) alert(`Login Failed: ${error.message}`);
                 else {
                     currentUserSession = data.user;
                     showGameScreen(data.user);
-                    showNotification("Session handshake synchronized. Vault open.");
                 }
             }
         });
@@ -845,14 +542,18 @@
                 const { data, error } = await supabaseClient.from('profiles').select('balance').eq('id', user.id).single();
                 
                 if (error) {
-                    if (cachedBalance !== null) currentBalance = parseFloat(cachedBalance);
-                    else currentBalance = 0.00;
+                    console.warn("Database sync blocked, pulling from local secure storage layer...");
+                    if (cachedBalance !== null) {
+                        currentBalance = parseFloat(cachedBalance);
+                    } else {
+                        currentBalance = 0.00;
+                    }
                 } else if (data) {
                     currentBalance = parseFloat(data.balance);
                     localStorage.setItem(localBackupKey, currentBalance);
                 }
             } catch (err) {
-                console.warn(err.message);
+                console.warn("Profiles table balance error:", err.message);
             } finally {
                 balanceDisplay.textContent = `₦${currentBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
             }
@@ -864,30 +565,25 @@
                 if (!user) return false;
 
                 const localBackupKey = `mineblast_bal_${user.id}`;
+                
                 currentBalance = newBalanceAmount;
                 localStorage.setItem(localBackupKey, currentBalance);
                 balanceDisplay.textContent = `₦${currentBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
 
                 const { error } = await supabaseClient.from('profiles').update({ balance: newBalanceAmount }).eq('id', user.id);
+                if (error) {
+                    console.warn("Cloud synchronization delayed. Preserved securely inside local memory storage context.", error.message);
+                }
                 return true;
             } catch (err) {
+                console.error("Database update transaction failed.", err.message);
                 return false;
             }
         }
 
-        function handleQuickBetAction(type) {
-            if (isGameActive) return;
-            let currentVal = parseFloat(betInput.value) || 5000;
-            if (type === 'min') currentVal = 5000;
-            else if (type === 'half') currentVal = Math.max(5000, Math.floor(currentVal / 2));
-            else if (type === 'double') currentVal = Math.min(150000, currentVal * 2);
-            else if (type === 'max') currentVal = Math.min(150000, Math.floor(currentBalance) > 5000 ? Math.min(150000, Math.floor(currentBalance)) : 150000);
-            betInput.value = currentVal;
-        }
-
         openWalletBtn.addEventListener('click', () => {
             if (isGameActive) {
-                showNotification("Finish your active game before modifying wallet funds!", false);
+                alert("❌ Finish your active game before modifying wallet funds!");
                 return;
             }
             tabDepositBtn.click();
@@ -926,6 +622,7 @@
 
         async function fetchAndRenderTransactionLogs() {
             if (!currentUserSession) return;
+            
             historyLoading.classList.remove('hidden');
             historyEmpty.classList.add('hidden');
             historyList.innerHTML = '';
@@ -938,6 +635,7 @@
                     .order('created_at', { ascending: false });
 
                 if (error) throw error;
+
                 historyLoading.classList.add('hidden');
 
                 if (!data || data.length === 0) {
@@ -949,6 +647,7 @@
                 data.forEach(tx => {
                     const block = document.createElement('div');
                     block.className = "bg-[#0b0f19] border border-slate-800/80 rounded-xl p-3 flex items-center justify-between text-xs";
+                    
                     const isDeposit = tx.type === 'deposit';
                     const amountText = `₦${parseFloat(tx.amount).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
                     const dateStr = tx.created_at ? new Date(tx.created_at).toLocaleDateString(undefined, {month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit'}) : 'Recent';
@@ -975,20 +674,53 @@
                     `;
                     historyList.appendChild(block);
                 });
+                
                 lucide.createIcons();
+
             } catch (err) {
+                console.error("Ledger sync failure:", err);
                 historyLoading.classList.add('hidden');
+                historyList.innerHTML = `<div class="text-center text-red-400 py-4 text-[11px]">❌ Sync issue: ${err.message}</div>`;
             }
         }
 
         depositForm.addEventListener('submit', function(e) {
             e.preventDefault();
             const amount = parseFloat(document.getElementById('dep-amount').value);
+            
             if (amount < 2000) {
-                showNotification("Minimum deposit amount allowed is ₦2,000", false);
+                alert("❌ Minimum deposit amount allowed is ₦2,000");
                 return;
             }
-            if (!currentUserSession || !currentUserSession.email) return;
+
+            if (!currentUserSession || !currentUserSession.email) {
+                alert("Session error. Please log in again.");
+                return;
+            }
+
+            async function handleSuccessfulPayment(reference) {
+                alert("💳 Payment authorized by Paystack! reference: " + reference);
+                
+                await supabaseClient.from('transactions').insert({
+                    user_id: currentUserSession.id,
+                    type: 'deposit',
+                    amount: amount,
+                    reference_proof: reference,
+                    status: 'approved'
+                });
+
+                const updatedTotal = currentBalance + amount;
+                const walletUpdateSuccess = await updateDatabaseWalletBalance(updatedTotal);
+
+                if (walletUpdateSuccess) {
+                    alert(`🎉 Success! ₦${amount.toLocaleString()} has been securely credited to your account.`);
+                } else {
+                    alert("⚠️ Balance sync delay. Your transaction was logged, please refresh.");
+                }
+
+                depositForm.reset();
+                walletModal.classList.add('hidden');
+            }
 
             try {
                 let handler = PaystackPop.setup({
@@ -997,37 +729,51 @@
                     amount: Math.round(amount * 100),
                     currency: "NGN",
                     ref: 'MB-' + Math.floor((Math.random() * 1000000000) + 1),
-                    callback: async function(response) {
-                        await supabaseClient.from('transactions').insert({
-                            user_id: currentUserSession.id,
-                            type: 'deposit',
-                            amount: amount,
-                            reference_proof: response.reference,
-                            status: 'approved'
-                        });
-                        await updateDatabaseWalletBalance(currentBalance + amount);
-                        showNotification(`Liquidity synchronized! Credited ₦${amount.toLocaleString()}`);
-                        depositForm.reset();
-                        walletModal.classList.add('hidden');
+                    callback: function(response) {
+                        handleSuccessfulPayment(response.reference);
                     },
-                    onClose: function() { showNotification("Transaction panel overlay closed.", false); }
+                    onClose: function() {
+                        alert("❌ Transaction window canceled.");
+                    }
                 });
                 handler.openIframe();
             } catch (err) {
-                showNotification("Failed to initiate secure payment frame overlay.", false);
+                try {
+                    const altHandler = new PaystackPop();
+                    altHandler.newTransaction({
+                        key: PAYSTACK_PUBLIC_KEY,
+                        email: currentUserSession.email,
+                        amount: Math.round(amount * 100),
+                        currency: "NGN",
+                        ref: 'MB-' + Math.floor((Math.random() * 1000000000) + 1),
+                        onSuccess: function(response) {
+                            handleSuccessfulPayment(response.reference);
+                        },
+                        onCancel: function() {
+                            alert("❌ Transaction window canceled.");
+                        }
+                    });
+                } catch (fallbackErr) {
+                    alert("❌ Failed to initiate Paystack layout overlay window.");
+                    console.error(fallbackErr);
+                }
             }
         });
 
+        // Dynamic Fee Live-Calculation Event Listener
         document.getElementById('wit-amount').addEventListener('input', function(e) {
             const amount = parseFloat(e.target.value) || 0;
             const netDisplay = document.getElementById('wit-net-payout');
+            
             if (amount >= 1000) {
-                netDisplay.textContent = `₦${(amount - 100).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+                const netPayout = amount - 100;
+                netDisplay.textContent = `₦${netPayout.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
             } else {
                 netDisplay.textContent = "₦0.00";
             }
         });
 
+        // Upgraded Standard Withdrawal Form Handler
         withdrawForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const amount = parseFloat(document.getElementById('wit-amount').value);
@@ -1036,12 +782,15 @@
             const accountName = document.getElementById('wit-account-name').value;
 
             if (amount > currentBalance) {
-                showNotification("Insufficient core vault balance bounds!", false);
+                alert("❌ Insufficient funds available to fulfill this withdrawal request!");
                 return;
             }
 
+            // Group input variations seamlessly to maintain database integrity rules
             const structuredDetails = `Bank: ${bank} | Acc No: ${accountNumber} | Name: ${accountName}`;
+
             const { data: { user } } = await supabaseClient.auth.getUser();
+            
             const syncStatus = await updateDatabaseWalletBalance(currentBalance - amount);
             if (!syncStatus) return;
 
@@ -1054,10 +803,10 @@
             });
 
             if (error) {
-                showNotification("Submission failed: " + error.message, false);
+                alert("Submission failed: " + error.message);
                 await updateDatabaseWalletBalance(currentBalance + amount);
             } else {
-                showNotification("Withdrawal ledger request dispatched for manual clearance.");
+                alert(`💸 Withdrawal Request Sent!\n\nYour account has been debited. Our compliance desk will process ₦${(amount - 100).toLocaleString()} to your ${bank} account manually.`);
                 withdrawForm.reset();
                 document.getElementById('wit-net-payout').textContent = "₦0.00";
                 walletModal.classList.add('hidden');
@@ -1090,14 +839,8 @@
                 const tile = document.createElement('button');
                 tile.dataset.index = i;
                 tile.disabled = true;
-                tile.className = "grid-tile aspect-square rounded-xl disabled:opacity-60";
-                
-                tile.innerHTML = `
-                    <div class="tile-inner">
-                        <div class="tile-front bg-[#1e293b] border border-slate-700/50 flex items-center justify-center"></div>
-                        <div class="tile-back flex items-center justify-center"></div>
-                    </div>
-                `;
+                tile.className = "grid-tile aspect-square rounded-xl bg-[#1e293b] border border-slate-700/50 flex items-center justify-center text-slate-400 shadow-inner disabled:opacity-60";
+                tile.innerHTML = `<div class="icon-container transition-transform duration-300"></div>`;
                 tile.addEventListener('click', () => handleTileClick(i));
                 gridContainer.appendChild(tile);
                 tileElements.push(tile);
@@ -1109,8 +852,16 @@
             betAmount = parseFloat(betInput.value) || 5000;
             minesCount = parseInt(minesSelect.value);
 
-            if (betAmount < 5000 || betAmount > 150000 || betAmount > currentBalance) {
-                showNotification("Out of bounds stake entries or insufficient capital options.", false);
+            if (betAmount < 5000) {
+                alert("❌ Minimum stake amount allowed is ₦5,000");
+                return;
+            }
+            if (betAmount > 150000) {
+                alert("❌ Maximum stake amount allowed is ₦150,000");
+                return;
+            }
+            if (betAmount > currentBalance) {
+                alert("❌ Insufficient Funds!");
                 return;
             }
 
@@ -1120,12 +871,9 @@
             });
 
             if (error) {
-                showNotification("Engine rejection: " + error.message, false);
+                alert("❌ Engine rejection: " + error.message);
                 return;
             }
-
-            currentSystemNonce++;
-            document.getElementById('provably-nonce-counter').textContent = currentSystemNonce;
 
             activeBackendGameId = data.game_id;
             await updateDatabaseWalletBalance(parseFloat(data.new_balance));
@@ -1145,24 +893,18 @@
 
             tileElements.forEach(tile => {
                 tile.disabled = false;
-                tile.className = "grid-tile aspect-square cursor-pointer";
-                tile.classList.remove('tile-flipped');
-                
-                const front = tile.querySelector('.tile-front');
-                const back = tile.querySelector('.tile-back');
-                
-                front.className = "tile-front bg-[#1e293b] hover:bg-[#2e3e56] border border-slate-600 transition-colors";
-                back.className = "tile-back";
-                back.innerHTML = '';
+                delete tile.dataset.revealed; 
+                tile.className = "grid-tile aspect-square rounded-xl bg-[#1e293b] hover:bg-[#2e3e56] border border-slate-600 flex items-center justify-center cursor-pointer shadow-md";
+                tile.querySelector('.icon-container').innerHTML = '';
             });
         }
 
         async function handleTileClick(index) {
             if (!isGameActive || !activeBackendGameId) return;
             const tile = tileElements[index];
-            if (tile.classList.contains('tile-flipped')) return;
+            if (tile.dataset.revealed === "true") return;
 
-            tile.classList.add('tile-flipped');
+            tile.dataset.revealed = "true";
             tile.disabled = true;
 
             const { data, error } = await supabaseClient.rpc('engine_flip_tile', {
@@ -1171,21 +913,16 @@
             });
 
             if (error) {
-                showNotification("Sync communication loss error: " + error.message, false);
+                alert("❌ Sync error: " + error.message);
                 return;
             }
 
-            const backFace = tile.querySelector('.tile-back');
-
             if (data.status === 'lost') {
-                backFace.className = "tile-back bg-red-500/20 border-2 border-red-500 rounded-xl flex items-center justify-center";
-                backFace.innerHTML = `<i data-lucide="bomb" class="w-7 h-7 text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.7)]"></i>`;
-                lucide.createIcons();
                 endGameRoundSettlement(false, data.all_mines);
             } else if (data.status === 'safe') {
                 revealedCount++;
-                backFace.className = "tile-back bg-emerald-500/10 border-2 border-emerald-500/50 rounded-xl flex items-center justify-center";
-                backFace.innerHTML = `<i data-lucide="gem" class="w-7 h-7 text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.5)]"></i>`;
+                tile.className = "grid-tile aspect-square rounded-xl bg-emerald-500/10 border-2 border-emerald-500/50 flex items-center justify-center shadow-lg shadow-emerald-500/5";
+                tile.querySelector('.icon-container').innerHTML = `<i data-lucide="gem" class="w-7 h-7 text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.5)]"></i>`;
                 lucide.createIcons();
 
                 if (revealedCount === 1) {
@@ -1213,11 +950,12 @@
             
             statProfit.textContent = `₦${currentProfit.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
             statMultiplier.textContent = `${nextMult}x`;
-            cashoutBtn.innerHTML = revealedCount > 0 ? `Cashout: ₦${currentProfit.toLocaleString(undefined, {maximumFractionDigits: 0})}` : `Secure Cashout`;
+            cashoutBtn.innerHTML = revealedCount > 0 ? `Cashout: ₦${currentProfit.toLocaleString(undefined, {maximumFractionDigits: 0})}` : `Cashout`;
         }
 
         async function triggerManualCashoutRequest() {
             if (!isGameActive || revealedCount === 0 || !activeBackendGameId) return;
+            
             const currentMult = getMultiplier(minesCount, revealedCount);
             
             const { data, error } = await supabaseClient.rpc('engine_cashout_game', {
@@ -1226,13 +964,9 @@
             });
 
             if (error) {
-                showNotification("Cashout state clearance failure: " + error.message, false);
+                alert("❌ Cashout failed: " + error.message);
                 return;
             }
-
-            const canvasPanel = document.getElementById('main-board-panel');
-            canvasPanel.classList.add('win-glow-burst');
-            setTimeout(() => canvasPanel.classList.remove('win-glow-burst'), 600);
 
             endGameRoundSettlement(true, data.all_mines, data.new_balance, data.payout);
         }
@@ -1241,30 +975,24 @@
             isGameActive = false;
             const finalMult = getMultiplier(minesCount, revealedCount);
 
-            // Record into the new session history ribbons array
-            historicalMultipliers.push(isWin ? finalMult : 0.00);
-            renderMultiplierRibbon();
-
             if (updatedBalance !== null) {
                 await updateDatabaseWalletBalance(parseFloat(updatedBalance));
             }
             
             tileElements.forEach((tile, idx) => {
                 tile.disabled = true;
-                const inner = tile.querySelector('.tile-inner');
-                const front = tile.querySelector('.tile-front');
-                const back = tile.querySelector('.tile-back');
-
+                const container = tile.querySelector('.icon-container');
                 if (serverMinesArray && serverMinesArray.includes(idx)) {
-                    if (!tile.classList.contains('tile-flipped')) {
-                        tile.classList.add('tile-flipped');
-                        back.className = "tile-back bg-red-950/20 border border-red-900/40 rounded-xl flex items-center justify-center opacity-60";
-                        back.innerHTML = `<i data-lucide="bomb" class="w-5 h-5 text-red-700"></i>`;
+                    if (tile.dataset.revealed !== "true") {
+                        tile.className = "grid-tile aspect-square rounded-xl bg-red-950/20 border border-red-900/40 flex items-center justify-center opacity-60";
+                        container.innerHTML = `<i data-lucide="bomb" class="w-6 h-6 text-red-700"></i>`;
+                    } else {
+                        tile.className = "grid-tile aspect-square rounded-xl bg-red-500/20 border-2 border-red-500 flex items-center justify-center animate-bounce shadow-lg shadow-red-500/20";
+                        container.innerHTML = `<i data-lucide="bomb" class="w-7 h-7 text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.7)]"></i>`;
                     }
-                } else if (!tile.classList.contains('tile-flipped')) {
-                    tile.classList.add('tile-flipped');
-                    back.className = "tile-back bg-slate-800/20 border border-slate-800 rounded-xl flex items-center justify-center opacity-40";
-                    back.innerHTML = `<i data-lucide="gem" class="w-4 h-4 text-slate-500"></i>`;
+                } else if (tile.dataset.revealed !== "true") {
+                    tile.className = "grid-tile aspect-square rounded-xl bg-slate-800/40 border border-slate-700 flex items-center justify-center opacity-40";
+                    container.innerHTML = `<i data-lucide="gem" class="w-5 h-5 text-slate-500"></i>`;
                 }
             });
             lucide.createIcons();
@@ -1273,13 +1001,14 @@
             cashoutBtn.classList.add('hidden');
             betInput.disabled = false;
             minesSelect.disabled = false;
+
             activeBackendGameId = null;
 
             if (isWin) {
                 const displayProfit = dynamicPayout > 0 ? dynamicPayout : (betAmount * finalMult);
-                showNotification(`Settlement Complete! Credited +₦${displayProfit.toLocaleString()}`);
+                alert(`🎉 Victory! Vault balance saved. Credited ₦${displayProfit.toLocaleString()} (${finalMult}x)!`);
             } else {
-                showNotification("Explosive array triggered. Round terminated.", false);
+                alert("💥 Boom! You uncovered a mine. Game round lost.");
             }
         }
 
