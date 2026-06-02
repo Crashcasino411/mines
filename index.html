@@ -699,27 +699,26 @@
             }
 
             async function handleSuccessfulPayment(reference) {
-                alert("💳 Payment authorized by Paystack! reference: " + reference);
-                
-                await supabaseClient.from('transactions').insert({
-                    user_id: currentUserSession.id,
-                    type: 'deposit',
-                    amount: amount,
-                    reference_proof: reference,
-                    status: 'approved'
-                });
+                try {
+                    // Call the secure database function to run balance increases behind RLS
+                    const { error } = await supabaseClient.rpc('verify_and_credit_deposit', {
+                        p_user_id: currentUserSession.id,
+                        p_amount: amount,
+                        p_reference: reference
+                    });
 
-                const updatedTotal = currentBalance + amount;
-                const walletUpdateSuccess = await updateDatabaseWalletBalance(updatedTotal);
+                    if (error) throw error;
 
-                if (walletUpdateSuccess) {
                     alert(`🎉 Success! ₦${amount.toLocaleString()} has been securely credited to your account.`);
-                } else {
-                    alert("⚠️ Balance sync delay. Your transaction was logged, please refresh.");
-                }
+                    
+                    depositForm.reset();
+                    walletModal.classList.add('hidden');
+                    await syncProfileWallet();
 
-                depositForm.reset();
-                walletModal.classList.add('hidden');
+                } catch (err) {
+                    alert("⚠️ Balance sync issue: " + err.message);
+                    console.error(err);
+                }
             }
 
             try {
