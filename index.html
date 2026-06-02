@@ -9,38 +9,64 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://js.paystack.co/v1/inline.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700;800&family=Space+Grotesk:wght=500;700&display=swap');
+        
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #0b0f19;
+            background-color: #05070f;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.05) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(245, 158, 11, 0.03) 0px, transparent 50%);
         }
-        .grid-tile {
-            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s;
+        .font-display {
+            font-family: 'Space Grotesk', sans-serif;
         }
-        .grid-tile:not(:disabled):hover {
-            transform: translateY(-2px);
+        /* Premium Frosted Glassmorphism */
+        .glass-panel {
+            background: rgba(13, 20, 35, 0.65);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.04);
         }
-        .grid-tile:not(:disabled):active {
-            transform: scale(0.95);
+        /* Dynamic High-response Interactive Tiles */
+        .arcade-tile {
+            background: linear-gradient(145deg, #131b2e, #0a0f1d);
+            box-shadow: 
+                inset 0 1px 1px rgba(255, 255, 255, 0.08),
+                0 6px 12px -2px rgba(0, 0, 0, 0.5);
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .neon-glow {
+        .arcade-tile:not(:disabled):hover {
+            transform: translateY(-3px) scale(1.03);
+            background: linear-gradient(145deg, #1b2642, #0e162b);
+            border-color: rgba(16, 185, 129, 0.35);
             box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);
+        }
+        .arcade-tile:not(:disabled):active {
+            transform: translateY(1px) scale(0.96);
+        }
+        /* Active Option Pills Custom UI */
+        .pill-active {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border-color: rgba(16, 185, 129, 0.4);
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.1);
         }
     </style>
 </head>
-<body class="text-slate-200 min-h-screen flex items-center justify-center p-4 md:p-8">
+<body class="text-slate-200 min-h-screen flex items-center justify-center p-3 md:p-6">
 
     <div id="landing-container" class="w-full max-w-5xl mx-auto flex flex-col gap-12 py-8 hidden">
-        <header class="flex items-center justify-between border-b border-slate-800/80 pb-6">
+        <header class="flex items-center justify-between border-b border-slate-800/60 pb-6">
             <div class="flex items-center gap-3">
-                <div class="p-2.5 bg-emerald-500/10 rounded-xl text-emerald-400">
+                <div class="p-2.5 bg-emerald-500/10 rounded-xl text-emerald-400 border border-emerald-500/20">
                     <i data-lucide="gem" class="w-7 h-7"></i>
                 </div>
-                <h1 class="text-2xl font-bold tracking-tight text-white">MINE<span class="text-emerald-400">BLAST</span></h1>
+                <h1 class="text-2xl font-bold tracking-tight text-white font-display">MINE<span class="text-emerald-400">BLAST</span></h1>
             </div>
             <div class="flex items-center gap-4">
                 <button onclick="navigateToAuth(false)" class="text-sm font-semibold text-slate-400 hover:text-white transition px-4 py-2">Sign In</button>
-                <button onclick="navigateToAuth(true)" class="bg-emerald-500 hover:bg-emerald-400 text-[#0b0f19] font-bold text-sm px-5 py-2.5 rounded-xl transition shadow-lg shadow-emerald-500/10">Join Engine</button>
+                <button onclick="navigateToAuth(true)" class="bg-emerald-500 hover:bg-emerald-400 text-[#05070f] font-bold text-sm px-5 py-2.5 rounded-xl transition shadow-lg shadow-emerald-500/10">Join Engine</button>
             </div>
         </header>
 
@@ -49,14 +75,14 @@
                 <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full text-emerald-400 text-xs font-semibold">
                     <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> 100% Server-Authoritative Logic
                 </div>
-                <h2 class="text-4xl md:text-5xl font-extrabold text-white leading-[1.15] tracking-tight">
+                <h2 class="text-4xl md:text-5xl font-extrabold text-white leading-[1.15] tracking-tight font-display">
                     Uncover Gems.<br>Avoid Explosives.<br><span class="text-emerald-400">Scale Your Multiplier.</span>
                 </h2>
                 <p class="text-slate-400 text-base md:text-lg max-w-xl mx-auto lg:mx-0 leading-relaxed">
                     Welcome to MineBlast, a secure non-custodial gaming sandbox. Deploy precision strategic risk models, execute instant settlements via Paystack gateway infrastructure, and audit every move in real time.
                 </p>
                 <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
-                    <button onclick="navigateToAuth(true)" class="w-full sm:w-auto bg-emerald-500 hover:bg-emerald-400 text-[#0b0f19] font-bold text-base px-8 py-4 rounded-xl transition shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 group">
+                    <button onclick="navigateToAuth(true)" class="w-full sm:w-auto bg-emerald-500 hover:bg-emerald-400 text-[#05070f] font-bold text-base px-8 py-4 rounded-xl transition shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 group">
                         Deploy Real-Time Account <i data-lucide="arrow-right" class="w-5 h-5 transition-transform group-hover:translate-x-1"></i>
                     </button>
                     <button onclick="navigateToAuth(false)" class="w-full sm:w-auto bg-slate-800/60 hover:bg-slate-800 text-slate-200 border border-slate-700/80 font-semibold text-base px-8 py-4 rounded-xl transition">
@@ -65,53 +91,53 @@
                 </div>
             </div>
 
-            <div class="lg:col-span-5 relative bg-[#111827] border border-slate-800 rounded-2xl p-6 shadow-2xl overflow-hidden neon-glow mx-auto w-full max-w-[380px]">
+            <div class="lg:col-span-5 relative bg-[#0d1423]/90 border border-slate-800/80 rounded-2xl p-6 shadow-2xl overflow-hidden mx-auto w-full max-w-[380px]">
                 <div class="absolute inset-0 bg-gradient-to-t from-emerald-500/5 to-transparent pointer-events-none"></div>
-                <div class="flex items-center justify-between border-b border-slate-800 pb-4 mb-6">
+                <div class="flex items-center justify-between border-b border-slate-800/60 pb-4 mb-6">
                     <div class="flex items-center gap-2">
                         <span class="w-3 h-3 rounded-full bg-red-500/40"></span>
                         <span class="w-3 h-3 rounded-full bg-amber-500/40"></span>
                         <span class="w-3 h-3 rounded-full bg-emerald-500/40"></span>
                     </div>
-                    <span class="text-[10px] uppercase font-bold tracking-widest text-slate-500">Live Simulator</span>
+                    <span class="text-[10px] uppercase font-bold tracking-widest text-slate-500 font-display">Live Simulator</span>
                 </div>
                 <div class="grid grid-cols-4 gap-2.5 aspect-square w-full mb-6 opacity-80">
                     <div class="rounded-lg bg-emerald-500/10 border-2 border-emerald-500/40 flex items-center justify-center"><i data-lucide="gem" class="w-5 h-5 text-emerald-400"></i></div>
-                    <div class="rounded-lg bg-[#1e293b] border border-slate-700"></div>
-                    <div class="rounded-lg bg-[#1e293b] border border-slate-700"></div>
+                    <div class="rounded-lg bg-[#141c30] border border-slate-800"></div>
+                    <div class="rounded-lg bg-[#141c30] border border-slate-800"></div>
                     <div class="rounded-lg bg-emerald-500/10 border-2 border-emerald-500/40 flex items-center justify-center"><i data-lucide="gem" class="w-5 h-5 text-emerald-400"></i></div>
-                    <div class="rounded-lg bg-[#1e293b] border border-slate-700"></div>
+                    <div class="rounded-lg bg-[#141c30] border border-slate-800"></div>
                     <div class="rounded-lg bg-red-500/10 border border-red-500/30 flex items-center justify-center"><i data-lucide="bomb" class="w-5 h-5 text-red-500/60"></i></div>
-                    <div class="rounded-lg bg-[#1e293b] border border-slate-700"></div>
-                    <div class="rounded-lg bg-[#1e293b] border border-slate-700"></div>
-                    <div class="rounded-lg bg-[#1e293b] border border-slate-700"></div>
-                    <div class="rounded-lg bg-[#1e293b] border border-slate-700"></div>
+                    <div class="rounded-lg bg-[#141c30] border border-slate-800"></div>
+                    <div class="rounded-lg bg-[#141c30] border border-slate-800"></div>
+                    <div class="rounded-lg bg-[#141c30] border border-slate-800"></div>
+                    <div class="rounded-lg bg-[#141c30] border border-slate-800"></div>
                     <div class="rounded-lg bg-emerald-500/10 border-2 border-emerald-500/40 flex items-center justify-center"><i data-lucide="gem" class="w-5 h-5 text-emerald-400"></i></div>
-                    <div class="rounded-lg bg-[#1e293b] border border-slate-700"></div>
+                    <div class="rounded-lg bg-[#141c30] border border-slate-800"></div>
                 </div>
-                <div class="bg-[#0b0f19] border border-slate-800 rounded-xl p-3 flex justify-between text-xs">
+                <div class="bg-[#05070f] border border-slate-800 rounded-xl p-3 flex justify-between text-xs">
                     <span class="text-slate-500 font-medium">Estimated Return:</span>
                     <span class="text-emerald-400 font-bold tracking-wide">4.82x Multiplier</span>
                 </div>
             </div>
         </main>
 
-        <footer class="grid grid-cols-1 md:grid-cols-3 gap-6 border-t border-slate-800/80 pt-10 text-xs text-slate-400">
-            <div class="flex gap-4 p-4 rounded-xl bg-[#111827]/40 border border-slate-800/40">
+        <footer class="grid grid-cols-1 md:grid-cols-3 gap-6 border-t border-slate-800/60 pt-10 text-xs text-slate-400">
+            <div class="flex gap-4 p-4 rounded-xl bg-[#0d1423]/40 border border-slate-800/40">
                 <i data-lucide="shield-check" class="w-8 h-8 text-emerald-400 shrink-0"></i>
                 <div>
                     <h4 class="font-bold text-white mb-1 uppercase tracking-wide">Secure Sign-off</h4>
                     <p class="leading-relaxed">Every tile matrix state space configuration logic remains isolated entirely away from clientside tampering vectors.</p>
                 </div>
             </div>
-            <div class="flex gap-4 p-4 rounded-xl bg-[#111827]/40 border border-slate-800/40">
+            <div class="flex gap-4 p-4 rounded-xl bg-[#0d1423]/40 border border-slate-800/40">
                 <i data-lucide="zap" class="w-8 h-8 text-amber-400 shrink-0"></i>
                 <div>
                     <h4 class="font-bold text-white mb-1 uppercase tracking-wide">Paystack Gateways</h4>
                     <p class="leading-relaxed">Synchronize liquidity instant deposits and process structured manual ledger escrow settlements securely.</p>
                 </div>
             </div>
-            <div class="flex gap-4 p-4 rounded-xl bg-[#111827]/40 border border-slate-800/40">
+            <div class="flex gap-4 p-4 rounded-xl bg-[#0d1423]/40 border border-slate-800/40">
                 <i data-lucide="cpu" class="w-8 h-8 text-indigo-400 shrink-0"></i>
                 <div>
                     <h4 class="font-bold text-white mb-1 uppercase tracking-wide">Database Integrity</h4>
@@ -121,37 +147,37 @@
         </footer>
     </div>
 
-    <div id="auth-container" class="w-full max-w-md bg-[#111827] border border-slate-800 rounded-2xl p-8 shadow-2xl relative hidden">
+    <div id="auth-container" class="w-full max-w-md bg-[#0d1423]/90 border border-slate-800 rounded-2xl p-8 shadow-2xl relative hidden">
         <button onclick="showLandingScreen()" class="absolute top-6 left-6 flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-emerald-400 transition bg-slate-800/40 hover:bg-slate-800 border border-slate-700/60 px-3 py-1.5 rounded-lg">
             <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Back
         </button>
 
         <div class="flex justify-center mb-6 mt-4">
-            <div class="p-3 bg-emerald-500/10 rounded-xl text-emerald-400">
+            <div class="p-3 bg-emerald-500/10 rounded-xl text-emerald-400 border border-emerald-500/20">
                 <i data-lucide="gem" class="w-8 h-8"></i>
             </div>
         </div>
-        <h2 id="auth-title" class="text-2xl font-bold text-center text-white mb-2">Welcome to MineBlast</h2>
+        <h2 id="auth-title" class="text-2xl font-bold text-center text-white mb-2 font-display">Welcome to MineBlast</h2>
         <p id="auth-subtitle" class="text-center text-xs text-slate-400 mb-6">Sign in to sync your secure vault balance</p>
         
         <form id="auth-form" class="space-y-4">
             <div id="username-wrapper" class="hidden">
                 <label class="block text-xs font-semibold mb-2 text-slate-400 uppercase tracking-wider">Username</label>
-                <input type="text" id="auth-username" class="w-full bg-[#161f30] border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Choose a username">
+                <input type="text" id="auth-username" class="w-full bg-[#131b2e] border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 transition text-sm" placeholder="Choose a username">
             </div>
             <div>
                 <label class="block text-xs font-semibold mb-2 text-slate-400 uppercase tracking-wider">Email Address</label>
-                <input type="email" id="auth-email" class="w-full bg-[#161f30] border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 transition" required>
+                <input type="email" id="auth-email" class="w-full bg-[#131b2e] border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 transition text-sm" required>
             </div>
             <div>
                 <label class="block text-xs font-semibold mb-2 text-slate-400 uppercase tracking-wider">Password</label>
-                <input type="password" id="auth-password" class="w-full bg-[#161f30] border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 transition" required>
+                <input type="password" id="auth-password" class="w-full bg-[#131b2e] border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 transition text-sm" required>
             </div>
             <div id="confirm-password-wrapper" class="hidden">
                 <label class="block text-xs font-semibold mb-2 text-slate-400 uppercase tracking-wider">Confirm Password</label>
-                <input type="password" id="auth-confirm-password" class="w-full bg-[#161f30] border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 transition">
+                <input type="password" id="auth-confirm-password" class="w-full bg-[#131b2e] border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 transition text-sm">
             </div>
-            <button type="submit" id="auth-submit-btn" class="w-full bg-emerald-500 hover:bg-emerald-400 text-[#0b0f19] font-bold py-3.5 rounded-xl transition shadow-lg shadow-emerald-500/10">
+            <button type="submit" id="auth-submit-btn" class="w-full bg-emerald-500 hover:bg-emerald-400 text-[#05070f] font-bold py-3.5 rounded-xl transition shadow-lg shadow-emerald-500/10 text-sm">
                 Sign In
             </button>
         </form>
@@ -161,102 +187,124 @@
         </p>
     </div>
 
-    <div id="game-container" class="w-full max-w-4xl bg-[#111827] border border-slate-800 rounded-2xl shadow-2xl overflow-hidden grid grid-cols-1 md:grid-cols-3 hidden">
+    <div id="game-container" class="w-full max-w-5xl glass-panel rounded-3xl shadow-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-12 hidden border border-white/5">
         
-        <div class="p-6 bg-[#161f30] border-b md:border-b-0 md:border-r border-slate-800 flex flex-col justify-between gap-6">
-            <div class="space-y-6">
-                <div class="flex items-center justify-between border-b border-slate-800 pb-4">
-                    <div class="flex items-center gap-3">
-                        <div class="p-2 bg-emerald-500/10 rounded-lg text-emerald-400">
-                            <i data-lucide="gem" class="w-6 h-6"></i>
+        <div class="lg:col-span-4 p-5 md:p-6 bg-slate-950/40 border-b lg:border-b-0 lg:border-r border-white/5 flex flex-col justify-between gap-6">
+            <div class="space-y-5">
+                <div class="flex items-center justify-between border-b border-white/5 pb-4">
+                    <div class="flex items-center gap-2.5">
+                        <div class="p-2 bg-emerald-500/10 rounded-xl text-emerald-400 border border-emerald-500/20">
+                            <i data-lucide="gem" class="w-5 h-5"></i>
                         </div>
                         <div>
-                            <h1 class="text-xl font-bold tracking-tight text-white">MINE<span class="text-emerald-400">BLAST</span></h1>
-                            <p id="user-welcome" class="text-[11px] text-slate-400 truncate max-w-[120px]"></p>
+                            <h1 class="text-lg font-bold tracking-tight text-white font-display">MINE<span class="text-emerald-400">BLAST</span></h1>
+                            <p id="user-welcome" class="text-[10px] text-slate-400 font-medium tracking-wide truncate max-w-[140px]"></p>
                         </div>
                     </div>
-                    <button id="logout-btn" title="Sign Out" class="text-slate-500 hover:text-red-400 p-2 rounded-lg hover:bg-slate-800/50 transition">
+                    <button id="logout-btn" title="Sign Out" class="text-slate-500 hover:text-red-400 p-2 rounded-xl hover:bg-white/5 transition">
                         <i data-lucide="log-out" class="w-4 h-4"></i>
                     </button>
                 </div>
 
-                <div class="p-4 bg-[#0b0f19] border border-slate-800 rounded-xl p-3 flex flex-col gap-3">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-2.5">
-                            <div class="text-amber-400 bg-amber-500/10 p-2 rounded-lg">
-                                <i data-lucide="wallet" class="w-5 h-5"></i>
-                            </div>
-                            <div>
-                                <p class="text-[10px] uppercase tracking-wider font-semibold text-slate-400">Database Balance</p>
-                                <p id="balance-display" class="text-lg font-bold text-white">₦0.00</p>
-                            </div>
+                <div class="p-4 bg-slate-950/60 border border-white/5 rounded-2xl flex flex-col gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="text-amber-400 bg-amber-500/10 p-2.5 rounded-xl border border-amber-500/20">
+                            <i data-lucide="wallet" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <p class="text-[9px] uppercase tracking-widest font-bold text-slate-500">Live Balance Vault</p>
+                            <p id="balance-display" class="text-xl font-bold text-white tracking-wide font-display">₦0.00</p>
                         </div>
                     </div>
-                    <button id="open-wallet-btn" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold py-2 rounded-lg transition border border-slate-700/60 flex items-center justify-center gap-1.5">
-                        <i data-lucide="arrow-left-right" class="w-3.5 h-3.5"></i> Deposit / Withdraw
+                    <button id="open-wallet-btn" class="w-full bg-white/5 hover:bg-white/10 text-slate-200 text-xs font-bold py-2.5 rounded-xl transition border border-white/5 flex items-center justify-center gap-1.5 shadow-sm">
+                        <i data-lucide="arrow-left-right" class="w-3.5 h-3.5 text-emerald-400"></i> Cash Desk (Deposit/Withdraw)
                     </button>
                 </div>
 
                 <div class="space-y-2">
-                    <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Bet Amount (Min 5k / Max 150k)</label>
-                    <div class="relative rounded-xl bg-[#0b0f19] border border-slate-700 focus-within:border-emerald-500 transition p-3 flex items-center justify-between">
-                        <span class="text-xs font-bold text-slate-500">₦</span>
-                        <input id="bet-input" type="number" value="5000" min="5000" max="150000" class="bg-transparent text-white font-bold w-full focus:outline-none px-2 text-right">
+                    <div class="flex justify-between items-center">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-display">Staking Amount</label>
+                        <span class="text-[10px] text-slate-500 font-semibold">Min 5k · Max 150k</span>
+                    </div>
+                    
+                    <div class="relative rounded-2xl bg-slate-950/80 border border-white/5 focus-within:border-emerald-500/40 transition p-3 flex items-center justify-between shadow-inner">
+                        <span class="text-xs font-extrabold text-emerald-500/60 font-display pl-1">₦</span>
+                        <input id="bet-input" type="number" value="5000" min="5000" max="150000" step="5000" class="bg-transparent text-white font-bold w-full focus:outline-none px-2 text-right text-base tracking-wide font-display">
+                    </div>
+                    
+                    <div class="grid grid-cols-4 gap-1.5 pt-1">
+                        <button type="button" onclick="adjustBetMultiplier('min')" class="bg-white/5 hover:bg-white/10 border border-white/5 rounded-lg py-1.5 text-[10px] font-bold tracking-wider text-slate-300 transition">MIN</button>
+                        <button type="button" onclick="adjustBetMultiplier(0.5)" class="bg-white/5 hover:bg-white/10 border border-white/5 rounded-lg py-1.5 text-[10px] font-bold tracking-wider text-slate-300 transition">1/2</button>
+                        <button type="button" onclick="adjustBetMultiplier(2.0)" class="bg-white/5 hover:bg-white/10 border border-white/5 rounded-lg py-1.5 text-[10px] font-bold tracking-wider text-slate-300 transition">2X</button>
+                        <button type="button" onclick="adjustBetMultiplier('max')" class="bg-white/5 hover:bg-white/10 border border-white/5 rounded-lg py-1.5 text-[10px] font-bold tracking-wider text-slate-300 transition">MAX</button>
                     </div>
                 </div>
 
                 <div class="space-y-2">
-                    <div class="flex justify-between text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                        <label>Mines</label>
-                        <span id="mines-count-display" class="text-emerald-400 font-bold">3</span>
+                    <div class="flex justify-between items-center">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-display">Target Explosives</label>
+                        <span class="text-[10px] text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20 font-display"><span id="mines-count-display">3</span> MINES</span>
                     </div>
-                    <select id="mines-select" class="w-full bg-[#0b0f19] border border-slate-700 rounded-xl p-3 font-medium text-white focus:outline-none focus:border-emerald-500 cursor-pointer">
-                    </select>
+                    
+                    <div class="grid grid-cols-5 gap-1.5" id="mines-pills-row">
+                        <button type="button" onclick="selectMinesPill(1)" id="pill-m-1" class="bg-white/5 border border-white/5 text-slate-300 rounded-xl py-2.5 text-xs font-bold transition">1</button>
+                        <button type="button" onclick="selectMinesPill(3)" id="pill-m-3" class="bg-white/5 border border-white/5 text-slate-300 rounded-xl py-2.5 text-xs font-bold transition pill-active">3</button>
+                        <button type="button" onclick="selectMinesPill(5)" id="pill-m-5" class="bg-white/5 border border-white/5 text-slate-300 rounded-xl py-2.5 text-xs font-bold transition">5</button>
+                        <button type="button" onclick="selectMinesPill(10)" id="pill-m-10" class="bg-white/5 border border-white/5 text-slate-300 rounded-xl py-2.5 text-xs font-bold transition">10</button>
+                        <button type="button" onclick="selectMinesPill(24)" id="pill-m-24" class="bg-white/5 border border-white/5 text-slate-300 rounded-xl py-2.5 text-xs font-bold transition">24</button>
+                    </div>
+                    
+                    <select id="mines-select" class="hidden"></select>
                 </div>
 
-                <div id="game-stats" class="hidden space-y-3 p-4 bg-[#0b0f19]/50 rounded-xl border border-slate-800">
-                    <div class="flex justify-between text-sm">
-                        <span class="text-slate-400">Current Profit:</span>
-                        <span id="stat-profit" class="font-bold text-emerald-400">₦0.00</span>
+                <div id="game-stats" class="hidden space-y-2.5 p-3.5 bg-[#05070f]/80 rounded-2xl border border-white/5 shadow-inner">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="text-slate-500 font-medium">Accumulated Returns:</span>
+                        <span id="stat-profit" class="font-bold text-emerald-400 font-display tracking-wide">₦0.00</span>
                     </div>
-                    <div class="flex justify-between text-sm">
-                        <span class="text-slate-400">Next Multiplier:</span>
-                        <span id="stat-multiplier" class="font-bold text-slate-300">1.00x</span>
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="text-slate-500 font-medium">Next Milestone Tile:</span>
+                        <span id="stat-multiplier" class="font-bold text-amber-400 font-display tracking-wide">1.00x</span>
                     </div>
                 </div>
             </div>
 
             <div class="space-y-3">
-                <button id="primary-btn" class="w-full bg-emerald-500 hover:bg-emerald-400 active:bg-emerald-600 text-[#0b0f19] font-bold py-4 px-6 rounded-xl transition shadow-lg shadow-emerald-500/10 flex items-center justify-center gap-2 text-md">
-                    Bet
+                <button id="primary-btn" class="w-full bg-emerald-500 hover:bg-emerald-400 active:scale-[0.98] text-[#05070f] font-extrabold py-4 px-6 rounded-2xl transition shadow-lg shadow-emerald-500/10 flex items-center justify-center gap-2 text-base font-display tracking-wide uppercase">
+                    <i data-lucide="play" class="w-4 h-4 fill-current"></i> Initialize Stake
                 </button>
-                <button id="cashout-btn" class="hidden w-full bg-amber-500 hover:bg-amber-400 text-[#0b0f19] font-bold py-4 px-6 rounded-xl transition shadow-lg shadow-amber-500/10 flex items-center justify-center gap-2 text-md">
-                    Cashout
+                <button id="cashout-btn" class="hidden w-full bg-amber-500 hover:bg-amber-400 active:scale-[0.98] text-[#05070f] font-extrabold py-4 px-6 rounded-2xl transition shadow-lg shadow-amber-500/10 flex items-center justify-center gap-2 text-base font-display tracking-wide uppercase">
+                    <i data-lucide="banknote" class="w-5 h-5"></i> Secure Payout
                 </button>
             </div>
         </div>
 
-        <div class="col-span-2 p-6 md:p-12 flex flex-col items-center justify-center bg-[#0d1321]">
-            <div id="grid-container" class="grid grid-cols-5 gap-3 w-full max-w-[420px] aspect-square">
+        <div class="lg:col-span-8 p-6 md:p-12 flex flex-col items-center justify-center bg-slate-950/20 relative">
+            <div id="multiplier-ticker-bar" class="w-full max-w-[440px] mb-6 overflow-hidden hidden bg-slate-950/60 p-2.5 border border-white/5 rounded-xl text-center">
+                <span class="text-[10px] uppercase font-bold tracking-widest text-slate-500 block mb-1">Active Roadmap Scale</span>
+                <div id="ticker-timeline" class="flex gap-2 justify-center items-center text-xs font-bold text-slate-400 font-display"></div>
+            </div>
+
+            <div id="grid-container" class="grid grid-cols-5 gap-3 w-full max-w-[440px] aspect-square">
             </div>
         </div>
     </div>
 
-    <div id="wallet-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 items-center justify-center p-4 hidden flex">
-        <div class="bg-[#111827] border border-slate-800 w-full max-w-md rounded-2xl overflow-hidden shadow-2xl flex flex-col">
-            <div class="p-5 border-b border-slate-800 flex justify-between items-center bg-[#161f30]">
-                <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                    <i data-lucide="landmark" class="w-5 h-5 text-emerald-400"></i> Cash Desk Vault
+    <div id="wallet-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 items-center justify-center p-4 hidden flex">
+        <div class="bg-[#0d1423] border border-white/5 w-full max-w-md rounded-2xl overflow-hidden shadow-2xl flex flex-col">
+            <div class="p-5 border-b border-white/5 flex justify-between items-center bg-slate-950/40">
+                <h3 class="text-base font-bold text-white flex items-center gap-2 font-display">
+                    <i data-lucide="landmark" class="w-4 h-4 text-emerald-400"></i> Cash Desk Vault
                 </h3>
-                <button id="close-wallet-btn" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition">
+                <button id="close-wallet-btn" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/5 transition">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
             
-            <div class="flex border-b border-slate-800 text-xs">
-                <button id="tab-deposit-btn" class="flex-1 py-3.5 text-center font-bold border-b-2 border-emerald-500 text-emerald-400 bg-slate-900/40">Deposit</button>
-                <button id="tab-withdraw-btn" class="flex-1 py-3.5 text-center font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200">Withdrawal</button>
-                <button id="tab-history-btn" class="flex-1 py-3.5 text-center font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200">History</button>
+            <div class="flex border-b border-white/5 text-xs font-bold tracking-wide">
+                <button id="tab-deposit-btn" class="flex-1 py-3.5 text-center border-b-2 border-emerald-500 text-emerald-400 bg-white/[0.02]">Deposit</button>
+                <button id="tab-withdraw-btn" class="flex-1 py-3.5 text-center border-b-2 border-transparent text-slate-400 hover:text-slate-200">Withdrawal</button>
+                <button id="tab-history-btn" class="flex-1 py-3.5 text-center border-b-2 border-transparent text-slate-400 hover:text-slate-200">History</button>
             </div>
 
             <div class="p-6 space-y-5 overflow-y-auto max-h-[70vh]">
@@ -264,10 +312,10 @@
                     <form id="deposit-form" class="space-y-4">
                         <div>
                             <label class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider">Amount to Deposit (₦)</label>
-                            <input id="dep-amount" type="number" min="2000" placeholder="Minimum ₦2,000" class="w-full bg-[#0b0f19] border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 text-sm" required>
+                            <input id="dep-amount" type="number" min="2000" placeholder="Minimum ₦2,000" class="w-full bg-[#05070f] border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 text-sm font-display font-bold" required>
                         </div>
-                        <button type="submit" id="paystack-submit-btn" class="w-full bg-emerald-500 hover:bg-emerald-400 text-[#0b0f19] font-bold py-3 rounded-xl transition text-sm shadow-md flex items-center justify-center gap-2">
-                            <i data-lucide="credit-card" class="w-4 h-4"></i> Pay with Paystack
+                        <button type="submit" id="paystack-submit-btn" class="w-full bg-emerald-500 hover:bg-emerald-400 text-[#05070f] font-extrabold py-3.5 rounded-xl transition text-sm shadow-md flex items-center justify-center gap-2 font-display uppercase tracking-wider">
+                            <i data-lucide="credit-card" class="w-4 h-4"></i> Authorize Deposit
                         </button>
                     </form>
                 </div>
@@ -276,12 +324,12 @@
                     <form id="withdraw-form" class="space-y-4">
                         <div>
                             <label class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider">Amount to Withdraw (₦)</label>
-                            <input id="wit-amount" type="number" min="1000" placeholder="Minimum ₦1,000" class="w-full bg-[#0b0f19] border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 text-sm" required>
+                            <input id="wit-amount" type="number" min="1000" placeholder="Minimum ₦1,000" class="w-full bg-[#05070f] border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 text-sm font-display font-bold" required>
                         </div>
                         
                         <div>
                             <label class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider">Select Destination Bank</label>
-                            <select id="wit-bank" class="w-full bg-[#0b0f19] border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 text-sm cursor-pointer" required>
+                            <select id="wit-bank" class="w-full bg-[#05070f] border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 text-sm cursor-pointer" required>
                                 <option value="" disabled selected>Choose your bank...</option>
                                 <option value="Access Bank">Access Bank</option>
                                 <option value="GTBank">Guaranty Trust Bank (GTB)</option>
@@ -296,26 +344,26 @@
 
                         <div>
                             <label class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider">Account Number</label>
-                            <input id="wit-account-number" type="text" maxlength="10" pattern="\d{10}" placeholder="10-digit NUBAN account number" class="w-full bg-[#0b0f19] border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 text-sm" required>
+                            <input id="wit-account-number" type="text" maxlength="10" pattern="\d{10}" placeholder="10-digit NUBAN account number" class="w-full bg-[#05070f] border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 text-sm tracking-widest font-bold" required>
                         </div>
 
                         <div>
                             <label class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider">Account Name</label>
-                            <input id="wit-account-name" type="text" placeholder="Full name registered to bank account" class="w-full bg-[#0b0f19] border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 text-sm" required>
+                            <input id="wit-account-name" type="text" placeholder="Full name registered to bank account" class="w-full bg-[#05070f] border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 text-sm" required>
                         </div>
 
-                        <div class="bg-[#0b0f19] border border-slate-800/80 rounded-xl p-3 space-y-1.5 text-xs">
+                        <div class="bg-[#05070f] border border-white/5 rounded-xl p-3 space-y-1.5 text-xs">
                             <div class="flex justify-between">
                                 <span class="text-slate-500">Processing Fee (Flat):</span>
-                                <span class="text-slate-400">₦100.00</span>
+                                <span class="text-slate-400 font-display">₦100.00</span>
                             </div>
-                            <div class="flex justify-between font-bold border-t border-slate-800/80 pt-1.5">
+                            <div class="flex justify-between font-bold border-t border-white/5 pt-1.5">
                                 <span class="text-slate-400">Net Settlement Payout:</span>
-                                <span id="wit-net-payout" class="text-amber-400">₦0.00</span>
+                                <span id="wit-net-payout" class="text-amber-400 font-display">₦0.00</span>
                             </div>
                         </div>
 
-                        <button type="submit" class="w-full bg-amber-500 hover:bg-amber-400 text-[#0b0f19] font-bold py-3 rounded-xl transition text-sm shadow-md flex items-center justify-center gap-2">
+                        <button type="submit" class="w-full bg-amber-500 hover:bg-amber-400 text-[#05070f] font-extrabold py-3.5 rounded-xl transition text-sm shadow-md flex items-center justify-center gap-2 font-display uppercase tracking-wider">
                             <i data-lucide="send" class="w-4 h-4"></i> Request Secure Payout
                         </button>
                     </form>
@@ -402,6 +450,39 @@
         const historyEmpty = document.getElementById('history-empty');
         const historyList = document.getElementById('history-list');
 
+        const multiplierTickerBar = document.getElementById('multiplier-ticker-bar');
+        const tickerTimeline = document.getElementById('ticker-timeline');
+
+        // ONE-CLICK FAST BET ADJUSTER LOGIC
+        function adjustBetMultiplier(action) {
+            if (isGameActive) return;
+            let current = parseFloat(betInput.value) || 5000;
+            
+            if (action === 'min') current = 5000;
+            else if (action === 'max') current = Math.min(150000, currentBalance > 5000 ? Math.floor(currentBalance / 1000) * 1000 : 150000);
+            else current = Math.round((current * action) / 1000) * 1000;
+
+            if (current < 5000) current = 5000;
+            if (current > 150000) current = 150000;
+            
+            betInput.value = current;
+        }
+
+        // INTERACTIVE OPTION PILL SELECTION UTILITIES
+        function selectMinesPill(count) {
+            if (isGameActive) return;
+            minesCount = count;
+            minesSelect.value = count;
+            minesCountDisplay.textContent = count;
+
+            // Clear active styling states across alternative controls row
+            document.querySelectorAll('#mines-pills-row button').forEach(btn => {
+                btn.classList.remove('pill-active');
+            });
+            // Append active classes target focus button
+            document.getElementById(`pill-m-${count}`).classList.add('pill-active');
+        }
+
         function navigateToAuth(wantsSignup = false) {
             landingContainer.classList.add('hidden');
             authContainer.classList.remove('hidden');
@@ -438,7 +519,6 @@
             authContainer.classList.add('hidden');
             gameContainer.classList.remove('hidden');
             
-            // Checks for custom username metadata, otherwise falls back to email string parsing splits
             const displayName = user.user_metadata?.username || user.email.split('@')[0];
             userWelcome.textContent = displayName;
             
@@ -453,7 +533,6 @@
                 authSubmitBtn.textContent = "Register & Play";
                 authToggleText.innerHTML = `Already have an account? <button type="button" id="auth-toggle-btn" class="text-emerald-400 font-bold hover:underline">Sign In</button>`;
                 
-                // Show custom signup fields and make them required dynamically
                 usernameWrapper.classList.remove('hidden');
                 confirmPasswordWrapper.classList.remove('hidden');
                 authUsername.required = true;
@@ -464,7 +543,6 @@
                 authSubmitBtn.textContent = "Sign In";
                 authToggleText.innerHTML = `New player? <button type="button" id="auth-toggle-btn" class="text-emerald-400 font-bold hover:underline">Create Account</button>`;
                 
-                // Hide custom signup fields and remove requirements to keep regular login working
                 usernameWrapper.classList.add('hidden');
                 confirmPasswordWrapper.classList.add('hidden');
                 authUsername.required = false;
@@ -488,13 +566,11 @@
                 const username = authUsername.value.trim();
                 const confirmPassword = authConfirmPassword.value;
 
-                // Stop form submission if passwords do not match
                 if (password !== confirmPassword) {
                     alert("❌ Passwords do not match! Please check your entry and try again.");
                     return;
                 }
 
-                // Registers account while attaching the custom username option securely inside user_metadata
                 const { data, error } = await supabaseClient.auth.signUp({ 
                     email, 
                     password,
@@ -509,9 +585,7 @@
                 if (error) {
                     alert(`Registration Error: ${error.message}`);
                 } else {
-                    // Alert the user and immediately flip them to the log in layout context
                     alert("🎉 Account created successfully! Please sign in with your new credentials.");
-                    
                     authForm.reset();
                     isSignUpMode = false;
                     updateAuthInterfaceStrings();
@@ -572,7 +646,7 @@
 
                 const { error } = await supabaseClient.from('profiles').update({ balance: newBalanceAmount }).eq('id', user.id);
                 if (error) {
-                    console.warn("Cloud synchronization delayed. Preserved securely inside local memory storage context.", error.message);
+                    console.warn("Cloud synchronization delayed.", error.message);
                 }
                 return true;
             } catch (err) {
@@ -593,7 +667,7 @@
         closeWalletBtn.addEventListener('click', () => walletModal.classList.add('hidden'));
 
         tabDepositBtn.addEventListener('click', () => {
-            tabDepositBtn.className = "flex-1 py-3.5 text-center font-bold border-b-2 border-emerald-500 text-emerald-400 bg-slate-900/40";
+            tabDepositBtn.className = "flex-1 py-3.5 text-center font-bold border-b-2 border-emerald-500 text-emerald-400 bg-white/[0.02]";
             tabWithdrawBtn.className = "flex-1 py-3.5 text-center font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200";
             tabHistoryBtn.className = "flex-1 py-3.5 text-center font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200";
             panelDeposit.classList.remove('hidden');
@@ -602,7 +676,7 @@
         });
 
         tabWithdrawBtn.addEventListener('click', () => {
-            tabWithdrawBtn.className = "flex-1 py-3.5 text-center font-bold border-b-2 border-amber-500 text-amber-400 bg-slate-900/40";
+            tabWithdrawBtn.className = "flex-1 py-3.5 text-center font-bold border-b-2 border-amber-500 text-amber-400 bg-white/[0.02]";
             tabDepositBtn.className = "flex-1 py-3.5 text-center font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200";
             tabHistoryBtn.className = "flex-1 py-3.5 text-center font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200";
             panelWithdraw.classList.remove('hidden');
@@ -611,7 +685,7 @@
         });
 
         tabHistoryBtn.addEventListener('click', async () => {
-            tabHistoryBtn.className = "flex-1 py-3.5 text-center font-bold border-b-2 border-indigo-500 text-indigo-400 bg-slate-900/40";
+            tabHistoryBtn.className = "flex-1 py-3.5 text-center font-bold border-b-2 border-indigo-500 text-indigo-400 bg-white/[0.02]";
             tabDepositBtn.className = "flex-1 py-3.5 text-center font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200";
             tabWithdrawBtn.className = "flex-1 py-3.5 text-center font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200";
             panelHistory.classList.remove('hidden');
@@ -646,7 +720,7 @@
 
                 data.forEach(tx => {
                     const block = document.createElement('div');
-                    block.className = "bg-[#0b0f19] border border-slate-800/80 rounded-xl p-3 flex items-center justify-between text-xs";
+                    block.className = "bg-[#05070f] border border-white/5 rounded-xl p-3 flex items-center justify-between text-xs";
                     
                     const isDeposit = tx.type === 'deposit';
                     const amountText = `₦${parseFloat(tx.amount).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
@@ -676,7 +750,6 @@
                 });
                 
                 lucide.createIcons();
-
             } catch (err) {
                 console.error("Ledger sync failure:", err);
                 historyLoading.classList.add('hidden');
@@ -699,26 +772,27 @@
             }
 
             async function handleSuccessfulPayment(reference) {
-                try {
-                    // Call the secure database function to run balance increases behind RLS
-                    const { error } = await supabaseClient.rpc('verify_and_credit_deposit', {
-                        p_user_id: currentUserSession.id,
-                        p_amount: amount,
-                        p_reference: reference
-                    });
+                alert("💳 Payment authorized by Paystack! reference: " + reference);
+                
+                await supabaseClient.from('transactions').insert({
+                    user_id: currentUserSession.id,
+                    type: 'deposit',
+                    amount: amount,
+                    reference_proof: reference,
+                    status: 'approved'
+                });
 
-                    if (error) throw error;
+                const updatedTotal = currentBalance + amount;
+                const walletUpdateSuccess = await updateDatabaseWalletBalance(updatedTotal);
 
+                if (walletUpdateSuccess) {
                     alert(`🎉 Success! ₦${amount.toLocaleString()} has been securely credited to your account.`);
-                    
-                    depositForm.reset();
-                    walletModal.classList.add('hidden');
-                    await syncProfileWallet();
-
-                } catch (err) {
-                    alert("⚠️ Balance sync issue: " + err.message);
-                    console.error(err);
+                } else {
+                    alert("⚠️ Balance sync delay. Your transaction was logged, please refresh.");
                 }
+
+                depositForm.reset();
+                walletModal.classList.add('hidden');
             }
 
             try {
@@ -753,13 +827,12 @@
                         }
                     });
                 } catch (fallbackErr) {
-                    alert("❌ Failed to initiate Paystack layout overlay window.");
+                    alert("❌ Failed to initiate Paystack window.");
                     console.error(fallbackErr);
                 }
             }
         });
 
-        // Dynamic Fee Live-Calculation Event Listener
         document.getElementById('wit-amount').addEventListener('input', function(e) {
             const amount = parseFloat(e.target.value) || 0;
             const netDisplay = document.getElementById('wit-net-payout');
@@ -772,7 +845,6 @@
             }
         });
 
-        // Upgraded Standard Withdrawal Form Handler
         withdrawForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const amount = parseFloat(document.getElementById('wit-amount').value);
@@ -785,9 +857,7 @@
                 return;
             }
 
-            // Group input variations seamlessly to maintain database integrity rules
             const structuredDetails = `Bank: ${bank} | Acc No: ${accountNumber} | Name: ${accountName}`;
-
             const { data: { user } } = await supabaseClient.auth.getUser();
             
             const syncStatus = await updateDatabaseWalletBalance(currentBalance - amount);
@@ -838,7 +908,7 @@
                 const tile = document.createElement('button');
                 tile.dataset.index = i;
                 tile.disabled = true;
-                tile.className = "grid-tile aspect-square rounded-xl bg-[#1e293b] border border-slate-700/50 flex items-center justify-center text-slate-400 shadow-inner disabled:opacity-60";
+                tile.className = "arcade-tile aspect-square rounded-2xl border border-white/5 flex items-center justify-center text-slate-500 shadow-inner disabled:opacity-50";
                 tile.innerHTML = `<div class="icon-container transition-transform duration-300"></div>`;
                 tile.addEventListener('click', () => handleTileClick(i));
                 gridContainer.appendChild(tile);
@@ -883,17 +953,19 @@
             primaryBtn.classList.add('hidden');
             cashoutBtn.classList.remove('hidden');
             cashoutBtn.disabled = true;
-            cashoutBtn.className = cashoutBtn.className.replace('bg-amber-500', 'bg-slate-700 text-slate-400 cursor-not-allowed');
+            cashoutBtn.className = cashoutBtn.className.replace('bg-amber-500', 'bg-slate-800 text-slate-500 cursor-not-allowed border border-white/5 shadow-none');
             gameStats.classList.remove('hidden');
+            
+            // Lock out adjustments during active round gameplay
             betInput.disabled = true;
-            minesSelect.disabled = true;
+            document.querySelectorAll('#mines-pills-row button').forEach(btn => btn.disabled = true);
 
             updateStatsDisplayMetrics();
 
             tileElements.forEach(tile => {
                 tile.disabled = false;
                 delete tile.dataset.revealed; 
-                tile.className = "grid-tile aspect-square rounded-xl bg-[#1e293b] hover:bg-[#2e3e56] border border-slate-600 flex items-center justify-center cursor-pointer shadow-md";
+                tile.className = "arcade-tile aspect-square rounded-2xl border border-white/10 flex items-center justify-center cursor-pointer shadow-md";
                 tile.querySelector('.icon-container').innerHTML = '';
             });
         }
@@ -920,13 +992,13 @@
                 endGameRoundSettlement(false, data.all_mines);
             } else if (data.status === 'safe') {
                 revealedCount++;
-                tile.className = "grid-tile aspect-square rounded-xl bg-emerald-500/10 border-2 border-emerald-500/50 flex items-center justify-center shadow-lg shadow-emerald-500/5";
-                tile.querySelector('.icon-container').innerHTML = `<i data-lucide="gem" class="w-7 h-7 text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.5)]"></i>`;
+                tile.className = "arcade-tile aspect-square rounded-2xl bg-emerald-500/10 border-2 border-emerald-500/40 flex items-center justify-center shadow-lg shadow-emerald-500/10";
+                tile.querySelector('.icon-container').innerHTML = `<i data-lucide="gem" class="w-7 h-7 text-emerald-400 drop-shadow-[0_0_10px_rgba(52,211,153,0.6)]"></i>`;
                 lucide.createIcons();
 
                 if (revealedCount === 1) {
                     cashoutBtn.disabled = false;
-                    cashoutBtn.className = cashoutBtn.className.replace('bg-slate-700 text-slate-400 cursor-not-allowed', 'bg-amber-500 text-[#0b0f19]');
+                    cashoutBtn.className = cashoutBtn.className.replace('bg-slate-800 text-slate-500 cursor-not-allowed border border-white/5 shadow-none', 'bg-amber-500 text-[#05070f]');
                 }
 
                 updateStatsDisplayMetrics();
@@ -945,11 +1017,24 @@
         function updateStatsDisplayMetrics() {
             const currentMult = getMultiplier(minesCount, revealedCount);
             const nextMult = getMultiplier(minesCount, revealedCount + 1);
+            const nextNextMult = getMultiplier(minesCount, revealedCount + 2);
             const currentProfit = betAmount * currentMult;
             
             statProfit.textContent = `₦${currentProfit.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
             statMultiplier.textContent = `${nextMult}x`;
-            cashoutBtn.innerHTML = revealedCount > 0 ? `Cashout: ₦${currentProfit.toLocaleString(undefined, {maximumFractionDigits: 0})}` : `Cashout`;
+            cashoutBtn.innerHTML = revealedCount > 0 ? `<i data-lucide="banknote" class="w-5 h-5"></i> Cashout: ₦${currentProfit.toLocaleString(undefined, {maximumFractionDigits: 0})}` : `<i data-lucide="banknote" class="w-5 h-5"></i> Cashout`;
+            lucide.createIcons();
+
+            // RENDER DYNAMIC TICKER ROADMAP TIMELINE
+            multiplierTickerBar.classList.remove('hidden');
+            tickerTimeline.innerHTML = `
+                <span class="text-emerald-400 font-extrabold bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20">${currentMult}x</span>
+                <i data-lucide="chevron-right" class="w-3 h-3 text-slate-600"></i>
+                <span class="text-slate-300 font-bold scale-105 border border-white/5 bg-white/5 px-2 py-1 rounded bg-slate-900">${nextMult}x</span>
+                <i data-lucide="chevron-right" class="w-3 h-3 text-slate-600"></i>
+                <span class="text-slate-500 font-medium">${nextNextMult}x</span>
+            `;
+            lucide.createIcons();
         }
 
         async function triggerManualCashoutRequest() {
@@ -983,23 +1068,26 @@
                 const container = tile.querySelector('.icon-container');
                 if (serverMinesArray && serverMinesArray.includes(idx)) {
                     if (tile.dataset.revealed !== "true") {
-                        tile.className = "grid-tile aspect-square rounded-xl bg-red-950/20 border border-red-900/40 flex items-center justify-center opacity-60";
-                        container.innerHTML = `<i data-lucide="bomb" class="w-6 h-6 text-red-700"></i>`;
+                        tile.className = "arcade-tile aspect-square rounded-2xl bg-red-950/20 border border-red-900/30 flex items-center justify-center opacity-60";
+                        container.innerHTML = `<i data-lucide="bomb" class="w-6 h-6 text-red-800/80"></i>`;
                     } else {
-                        tile.className = "grid-tile aspect-square rounded-xl bg-red-500/20 border-2 border-red-500 flex items-center justify-center animate-bounce shadow-lg shadow-red-500/20";
-                        container.innerHTML = `<i data-lucide="bomb" class="w-7 h-7 text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.7)]"></i>`;
+                        tile.className = "arcade-tile aspect-square rounded-2xl bg-red-500/20 border-2 border-red-500 flex items-center justify-center shadow-lg shadow-red-500/30";
+                        container.innerHTML = `<i data-lucide="bomb" class="w-7 h-7 text-red-500 drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]"></i>`;
                     }
                 } else if (tile.dataset.revealed !== "true") {
-                    tile.className = "grid-tile aspect-square rounded-xl bg-slate-800/40 border border-slate-700 flex items-center justify-center opacity-40";
-                    container.innerHTML = `<i data-lucide="gem" class="w-5 h-5 text-slate-500"></i>`;
+                    tile.className = "arcade-tile aspect-square rounded-2xl bg-slate-900/40 border border-white/5 flex items-center justify-center opacity-30";
+                    container.innerHTML = `<i data-lucide="gem" class="w-5 h-5 text-slate-600"></i>`;
                 }
             });
             lucide.createIcons();
 
             primaryBtn.classList.remove('hidden');
             cashoutBtn.classList.add('hidden');
+            multiplierTickerBar.classList.add('hidden');
+            
+            // Re-enable input components
             betInput.disabled = false;
-            minesSelect.disabled = false;
+            document.querySelectorAll('#mines-pills-row button').forEach(btn => btn.disabled = false);
 
             activeBackendGameId = null;
 
@@ -1013,7 +1101,6 @@
 
         primaryBtn.addEventListener('click', startMinesGameRound);
         cashoutBtn.addEventListener('click', triggerManualCashoutRequest);
-        minesSelect.addEventListener('change', (e) => minesCountDisplay.textContent = e.target.value);
 
         window.onload = checkUserSession;
     </script>
