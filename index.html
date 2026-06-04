@@ -321,9 +321,22 @@
                 </div>
 
                 <div id="panel-withdraw" class="space-y-4 hidden">
+                    <!-- Dynamic Turnover Indicator Panel -->
+                    <div id="wit-turnover-warning" class="bg-amber-500/10 border border-amber-500/20 rounded-xl p-3.5 text-xs text-amber-400 hidden">
+                        <p class="font-semibold flex items-center gap-1.5">
+                            <i data-lucide="alert-triangle" class="w-4 h-4"></i> Playthrough Rules Active
+                        </p>
+                        <p class="text-slate-400 mt-1 text-[11px] leading-relaxed">
+                            You must place <span id="wit-locked-turnover-display" class="font-bold text-white font-display">₦0.00</span> more in stakes before these funds unlock for withdrawal.
+                        </p>
+                    </div>
+
                     <form id="withdraw-form" class="space-y-4">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider">Amount to Withdraw (₦)</label>
+                            <div class="flex justify-between items-center mb-1.5">
+                                <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Amount to Withdraw (₦)</label>
+                                <span id="wit-withdrawable-max-label" class="text-[10px] text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/10 font-display">Withdrawable: ₦0.00</span>
+                            </div>
                             <input id="wit-amount" type="number" min="1000" placeholder="Minimum ₦1,000" class="w-full bg-[#05070f] border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 text-sm font-display font-bold" required>
                         </div>
                         
@@ -397,6 +410,8 @@
         let revealedCount = 0;
         let isGameActive = false;
         let currentBalance = 0.00; 
+        let withdrawableBalance = 0.00;
+        let requiredTurnover = 0.00;
         let isSignUpMode = false;
         let currentUserSession = null;
         let activeBackendGameId = null;
@@ -613,7 +628,7 @@
                 const localBackupKey = `mineblast_bal_${user.id}`;
                 const cachedBalance = localStorage.getItem(localBackupKey);
 
-                const { data, error } = await supabaseClient.from('profiles').select('balance').eq('id', user.id).single();
+                const { data, error } = await supabaseClient.from('profiles').select('balance, withdrawable_balance, required_turnover').eq('id', user.id).single();
                 
                 if (error) {
                     console.warn("Database sync blocked, pulling from local secure storage layer...");
@@ -622,14 +637,28 @@
                     } else {
                         currentBalance = 0.00;
                     }
+                    withdrawableBalance = currentBalance;
+                    requiredTurnover = 0.00;
                 } else if (data) {
                     currentBalance = parseFloat(data.balance);
+                    withdrawableBalance = data.withdrawable_balance !== undefined && data.withdrawable_balance !== null ? parseFloat(data.withdrawable_balance) : currentBalance;
+                    requiredTurnover = data.required_turnover !== undefined && data.required_turnover !== null ? parseFloat(data.required_turnover) : 0.00;
                     localStorage.setItem(localBackupKey, currentBalance);
                 }
             } catch (err) {
                 console.warn("Profiles table balance error:", err.message);
-            } finally {
+            } civilization: {
                 balanceDisplay.textContent = `₦${currentBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                
+                // Keep frontend displays matched up instantly
+                document.getElementById('wit-withdrawable-max-label').textContent = `Withdrawable: ₦${withdrawableBalance.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+                const warningBox = document.getElementById('wit-turnover-warning');
+                if (requiredTurnover > 0) {
+                    document.getElementById('wit-locked-turnover-display').textContent = `₦${requiredTurnover.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+                    warningBox.classList.remove('hidden');
+                } else {
+                    warningBox.classList.add('hidden');
+                }
             }
         }
 
@@ -648,6 +677,7 @@
                 if (error) {
                     console.warn("Cloud synchronization delayed.", error.message);
                 }
+                await syncProfileWallet();
                 return true;
             } catch (err) {
                 console.error("Database update transaction failed.", err.message);
@@ -655,11 +685,12 @@
             }
         }
 
-        openWalletBtn.addEventListener('click', () => {
+        openWalletBtn.addEventListener('click', async () => {
             if (isGameActive) {
                 alert("❌ Finish your active game before modifying wallet funds!");
                 return;
             }
+            await syncProfileWallet();
             tabDepositBtn.click();
             walletModal.classList.remove('hidden');
         });
@@ -675,13 +706,15 @@
             panelHistory.classList.add('hidden');
         });
 
-        tabWithdrawBtn.addEventListener('click', () => {
+        tabWithdrawBtn.addEventListener('click', async () => {
             tabWithdrawBtn.className = "flex-1 py-3.5 text-center font-bold border-b-2 border-amber-500 text-amber-400 bg-white/[0.02]";
             tabDepositBtn.className = "flex-1 py-3.5 text-center font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200";
             tabHistoryBtn.className = "flex-1 py-3.5 text-center font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200";
+            await syncProfileWallet();
             panelWithdraw.classList.remove('hidden');
             panelDeposit.classList.add('hidden');
             panelHistory.classList.add('hidden');
+            lucide.createIcons();
         });
 
         tabHistoryBtn.addEventListener('click', async () => {
@@ -782,14 +815,21 @@
                     status: 'approved'
                 });
 
+                // Update turnover requirement alongside normal balance addition
                 const updatedTotal = currentBalance + amount;
-                const walletUpdateSuccess = await updateDatabaseWalletBalance(updatedTotal);
+                const updatedTurnover = requiredTurnover + amount;
+                
+                const localBackupKey = `mineblast_bal_${currentUserSession.id}`;
+                localStorage.setItem(localBackupKey, updatedTotal);
 
-                if (walletUpdateSuccess) {
-                    alert(`🎉 Success! ₦${amount.toLocaleString()} has been securely credited to your account.`);
-                } else {
-                    alert("⚠️ Balance sync delay. Your transaction was logged, please refresh.");
-                }
+                const { error } = await supabaseClient.from('profiles').update({ 
+                    balance: updatedTotal,
+                    deposited_balance: updatedTotal, // mapping fields
+                    required_turnover: updatedTurnover
+                }).eq('id', currentUserSession.id);
+
+                await syncProfileWallet();
+                alert(`🎉 Success! ₦${amount.toLocaleString()} has been securely credited. Turn over your deposits across games to unlock withdrawal access.`);
 
                 depositForm.reset();
                 walletModal.classList.add('hidden');
@@ -852,6 +892,13 @@
             const accountNumber = document.getElementById('wit-account-number').value;
             const accountName = document.getElementById('wit-account-name').value;
 
+            await syncProfileWallet();
+
+            if (amount > withdrawableBalance) {
+                alert(`❌ Restricted! You can only withdraw up to your withdrawable balance (₦${withdrawableBalance.toLocaleString()}). You must play through your remaining deposits first.`);
+                return;
+            }
+
             if (amount > currentBalance) {
                 alert("❌ Insufficient funds available to fulfill this withdrawal request!");
                 return;
@@ -860,6 +907,7 @@
             const structuredDetails = `Bank: ${bank} | Acc No: ${accountNumber} | Name: ${accountName}`;
             const { data: { user } } = await supabaseClient.auth.getUser();
             
+            // Deduct from wallet balance
             const syncStatus = await updateDatabaseWalletBalance(currentBalance - amount);
             if (!syncStatus) return;
 
@@ -879,6 +927,7 @@
                 withdrawForm.reset();
                 document.getElementById('wit-net-payout').textContent = "₦0.00";
                 walletModal.classList.add('hidden');
+                await syncProfileWallet();
             }
         });
 
