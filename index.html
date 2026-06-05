@@ -21,14 +21,12 @@
         .font-display {
             font-family: 'Space Grotesk', sans-serif;
         }
-        /* Premium Frosted Glassmorphism */
         .glass-panel {
             background: rgba(13, 20, 35, 0.65);
             backdrop-filter: blur(14px);
             -webkit-backdrop-filter: blur(14px);
             border: 1px solid rgba(255, 255, 255, 0.04);
         }
-        /* Dynamic High-response Interactive Tiles */
         .arcade-tile {
             background: linear-gradient(145deg, #131b2e, #0a0f1d);
             box-shadow: 
@@ -45,7 +43,6 @@
         .arcade-tile:not(:disabled):active {
             transform: translateY(1px) scale(0.96);
         }
-        /* Active Option Pills Custom UI */
         .pill-active {
             background: rgba(16, 185, 129, 0.15);
             color: #34d399;
@@ -169,9 +166,13 @@
                 <label class="block text-xs font-semibold mb-2 text-slate-400 uppercase tracking-wider">Email Address</label>
                 <input type="email" id="auth-email" class="w-full bg-[#131b2e] border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 transition text-sm" required>
             </div>
-            <div>
+            <div id="password-wrapper">
                 <label class="block text-xs font-semibold mb-2 text-slate-400 uppercase tracking-wider">Password</label>
-                <input type="password" id="auth-password" class="w-full bg-[#131b2e] border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 transition text-sm" required>
+                <input type="password" id="auth-password" class="w-full bg-[#131b2e] border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 transition text-sm">
+            </div>
+            <div id="recovery-code-wrapper" class="hidden">
+                <label class="block text-xs font-semibold mb-2 text-slate-400 uppercase tracking-wider">Recovery Code</label>
+                <input type="text" id="auth-recovery-code" class="w-full bg-[#131b2e] border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 transition text-sm tracking-wider font-mono" placeholder="XXXX-XXXX-XXXX-XXXX">
             </div>
             <div id="confirm-password-wrapper" class="hidden">
                 <label class="block text-xs font-semibold mb-2 text-slate-400 uppercase tracking-wider">Confirm Password</label>
@@ -182,8 +183,18 @@
             </button>
         </form>
         
+        <div id="generated-recovery-display" class="hidden mt-4 p-4 bg-slate-950/80 border border-slate-800 rounded-xl text-center">
+            <p class="text-[10px] uppercase font-bold tracking-widest text-emerald-400 mb-1">Save Account Recovery Code</p>
+            <p class="text-[11px] text-slate-400 mb-3">Keep this code safe. Use it to recover your account if you lose your password.</p>
+            <div id="recovery-code-text" class="font-mono text-base font-bold bg-[#131b2e] border border-slate-800 rounded-lg p-2.5 text-white tracking-widest select-all mb-2"></div>
+            <button type="button" onclick="navigator.clipboard.writeText(document.getElementById('recovery-code-text').innerText); alert('Copied!');" class="text-[11px] font-bold text-slate-400 hover:text-white transition">Copy to Clipboard</button>
+        </div>
+
         <p class="text-xs text-center text-slate-400 mt-6" id="auth-toggle-text">
             New player? <button type="button" id="auth-toggle-btn" class="text-emerald-400 font-bold hover:underline">Create Account</button>
+        </p>
+        <p class="text-xs text-center text-slate-500 mt-2" id="forgot-password-toggle-text">
+            <button type="button" id="forgot-password-btn" class="hover:underline">Forgot Password?</button>
         </p>
     </div>
 
@@ -321,7 +332,6 @@
                 </div>
 
                 <div id="panel-withdraw" class="space-y-4 hidden">
-                    <!-- Dynamic Turnover Indicator Panel -->
                     <div id="wit-turnover-warning" class="bg-amber-500/10 border border-amber-500/20 rounded-xl p-3.5 text-xs text-amber-400 hidden">
                         <p class="font-semibold flex items-center gap-1.5">
                             <i data-lucide="alert-triangle" class="w-4 h-4"></i> Playthrough Rules Active
@@ -413,6 +423,7 @@
         let withdrawableBalance = 0.00;
         let requiredTurnover = 0.00;
         let isSignUpMode = false;
+        let isRecoveryMode = false;
         let currentUserSession = null;
         let activeBackendGameId = null;
         
@@ -428,11 +439,17 @@
         const authConfirmPassword = document.getElementById('auth-confirm-password');
         const usernameWrapper = document.getElementById('username-wrapper');
         const confirmPasswordWrapper = document.getElementById('confirm-password-wrapper');
+        const passwordWrapper = document.getElementById('password-wrapper');
+        const recoveryCodeWrapper = document.getElementById('recovery-code-wrapper');
+        const generatedRecoveryDisplay = document.getElementById('generated-recovery-display');
+        const recoveryCodeText = document.getElementById('recovery-code-text');
         const authTitle = document.getElementById('auth-title');
         const authSubtitle = document.getElementById('auth-subtitle');
         const authSubmitBtn = document.getElementById('auth-submit-btn');
         const authToggleBtn = document.getElementById('auth-toggle-btn');
         const authToggleText = document.getElementById('auth-toggle-text');
+        const forgotPasswordBtn = document.getElementById('forgot-password-btn');
+        const forgotPasswordToggleText = document.getElementById('forgot-password-toggle-text');
         
         const gridContainer = document.getElementById('grid-container');
         const minesSelect = document.getElementById('mines-select');
@@ -468,7 +485,6 @@
         const multiplierTickerBar = document.getElementById('multiplier-ticker-bar');
         const tickerTimeline = document.getElementById('ticker-timeline');
 
-        // ONE-CLICK FAST BET ADJUSTER LOGIC
         function adjustBetMultiplier(action) {
             if (isGameActive) return;
             let current = parseFloat(betInput.value) || 5000;
@@ -483,18 +499,15 @@
             betInput.value = current;
         }
 
-        // INTERACTIVE OPTION PILL SELECTION UTILITIES
         function selectMinesPill(count) {
             if (isGameActive) return;
             minesCount = count;
             minesSelect.value = count;
             minesCountDisplay.textContent = count;
 
-            // Clear active styling states across alternative controls row
             document.querySelectorAll('#mines-pills-row button').forEach(btn => {
                 btn.classList.remove('pill-active');
             });
-            // Append active classes target focus button
             document.getElementById(`pill-m-${count}`).classList.add('pill-active');
         }
 
@@ -502,6 +515,7 @@
             landingContainer.classList.add('hidden');
             authContainer.classList.remove('hidden');
             isSignUpMode = wantsSignup;
+            isRecoveryMode = false;
             updateAuthInterfaceStrings();
         }
 
@@ -542,26 +556,57 @@
         }
 
         function updateAuthInterfaceStrings() {
-            if (isSignUpMode) {
+            generatedRecoveryDisplay.classList.add('hidden');
+            if (isRecoveryMode) {
+                authTitle.textContent = "Recover Account";
+                authSubtitle.textContent = "Enter your email, recovery code, and new password";
+                authSubmitBtn.textContent = "Reset Password";
+                authToggleText.innerHTML = `Remembered your credentials? <button type="button" id="auth-toggle-btn" class="text-emerald-400 font-bold hover:underline">Sign In</button>`;
+                forgotPasswordToggleText.classList.add('hidden');
+                
+                usernameWrapper.classList.add('hidden');
+                confirmPasswordWrapper.classList.remove('hidden');
+                passwordWrapper.classList.remove('hidden');
+                recoveryCodeWrapper.classList.remove('hidden');
+                
+                authUsername.required = false;
+                authPassword.required = true;
+                authConfirmPassword.required = true;
+                document.getElementById('auth-recovery-code').required = true;
+                
+                document.querySelector('label[for="auth-password"]')?.setHTML('New Password');
+            } else if (isSignUpMode) {
                 authTitle.textContent = "Create Account";
                 authSubtitle.textContent = "Fund your account after registration to play";
                 authSubmitBtn.textContent = "Register & Play";
                 authToggleText.innerHTML = `Already have an account? <button type="button" id="auth-toggle-btn" class="text-emerald-400 font-bold hover:underline">Sign In</button>`;
+                forgotPasswordToggleText.classList.remove('hidden');
                 
                 usernameWrapper.classList.remove('hidden');
                 confirmPasswordWrapper.classList.remove('hidden');
+                passwordWrapper.classList.remove('hidden');
+                recoveryCodeWrapper.classList.add('hidden');
+                
                 authUsername.required = true;
+                authPassword.required = true;
                 authConfirmPassword.required = true;
+                document.getElementById('auth-recovery-code').required = false;
             } else {
                 authTitle.textContent = "Welcome to MineBlast";
                 authSubtitle.textContent = "Sign in to sync your secure vault balance";
                 authSubmitBtn.textContent = "Sign In";
                 authToggleText.innerHTML = `New player? <button type="button" id="auth-toggle-btn" class="text-emerald-400 font-bold hover:underline">Create Account</button>`;
+                forgotPasswordToggleText.classList.remove('hidden');
                 
                 usernameWrapper.classList.add('hidden');
                 confirmPasswordWrapper.classList.add('hidden');
+                passwordWrapper.classList.remove('hidden');
+                recoveryCodeWrapper.classList.add('hidden');
+                
                 authUsername.required = false;
+                authPassword.required = true;
                 authConfirmPassword.required = false;
+                document.getElementById('auth-recovery-code').required = false;
             }
             document.getElementById('auth-toggle-btn').addEventListener('click', () => authToggleBtn.click());
             lucide.createIcons();
@@ -569,6 +614,13 @@
 
         authToggleBtn.addEventListener('click', () => {
             isSignUpMode = !isSignUpMode;
+            isRecoveryMode = false;
+            updateAuthInterfaceStrings();
+        });
+
+        forgotPasswordBtn.addEventListener('click', () => {
+            isRecoveryMode = true;
+            isSignUpMode = false;
             updateAuthInterfaceStrings();
         });
 
@@ -577,7 +629,31 @@
             const email = authEmail.value;
             const password = authPassword.value;
 
-            if (isSignUpMode) {
+            if (isRecoveryMode) {
+                const recoveryCode = document.getElementById('auth-recovery-code').value.trim();
+                const confirmPassword = authConfirmPassword.value;
+
+                if (password !== confirmPassword) {
+                    alert("❌ Passwords do not match!");
+                    return;
+                }
+
+                const { data, error } = await supabaseClient.rpc('engine_recover_password', {
+                    p_email: email,
+                    p_recovery_code: recoveryCode,
+                    p_new_password: password
+                });
+
+                if (error) {
+                    alert(`Recovery Error: ${error.message}`);
+                } else if (data && data.success) {
+                    alert("🎉 Password successfully reset! You can now sign in with your new password.");
+                    isRecoveryMode = false;
+                    updateAuthInterfaceStrings();
+                } else {
+                    alert("❌ Invalid email or recovery code.");
+                }
+            } else if (isSignUpMode) {
                 const username = authUsername.value.trim();
                 const confirmPassword = authConfirmPassword.value;
 
@@ -586,13 +662,16 @@
                     return;
                 }
 
+                const generatedCode = Array.from({length: 4}, () => Array.from({length: 4}, () => 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'[Math.floor(Math.random() * 36)]).join('')).join('-');
+
                 const { data, error } = await supabaseClient.auth.signUp({ 
                     email, 
                     password,
                     options: {
                         emailRedirectTo: window.location.origin,
                         data: {
-                            username: username
+                            username: username,
+                            recovery_code: generatedCode
                         }
                     }
                 });
@@ -600,10 +679,13 @@
                 if (error) {
                     alert(`Registration Error: ${error.message}`);
                 } else {
-                    alert("🎉 Account created successfully! Please sign in with your new credentials.");
+                    recoveryCodeText.textContent = generatedCode;
+                    generatedRecoveryDisplay.classList.remove('hidden');
+                    alert("🎉 Account configured successfully! Save your recovery code details before signing in.");
                     authForm.reset();
                     isSignUpMode = false;
                     updateAuthInterfaceStrings();
+                    generatedRecoveryDisplay.classList.remove('hidden');
                 }
             } else {
                 const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
@@ -647,18 +729,16 @@
                 }
             } catch (err) {
                 console.warn("Profiles table balance error:", err.message);
-            } civilization: {
-                balanceDisplay.textContent = `₦${currentBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-                
-                // Keep frontend displays matched up instantly
-                document.getElementById('wit-withdrawable-max-label').textContent = `Withdrawable: ₦${withdrawableBalance.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
-                const warningBox = document.getElementById('wit-turnover-warning');
-                if (requiredTurnover > 0) {
-                    document.getElementById('wit-locked-turnover-display').textContent = `₦${requiredTurnover.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
-                    warningBox.classList.remove('hidden');
-                } else {
-                    warningBox.classList.add('hidden');
-                }
+            }
+            balanceDisplay.textContent = `₦${currentBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            
+            document.getElementById('wit-withdrawable-max-label').textContent = `Withdrawable: ₦${withdrawableBalance.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+            const warningBox = document.getElementById('wit-turnover-warning');
+            if (requiredTurnover > 0) {
+                document.getElementById('wit-locked-turnover-display').textContent = `₦${requiredTurnover.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+                warningBox.classList.remove('hidden');
+            } else {
+                warningBox.classList.add('hidden');
             }
         }
 
@@ -720,7 +800,7 @@
         tabHistoryBtn.addEventListener('click', async () => {
             tabHistoryBtn.className = "flex-1 py-3.5 text-center font-bold border-b-2 border-indigo-500 text-indigo-400 bg-white/[0.02]";
             tabDepositBtn.className = "flex-1 py-3.5 text-center font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200";
-            tabWithdrawBtn.className = "flex-1 py-3.5 text-center font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200";
+            tabHistoryBtn.className = "flex-1 py-3.5 text-center font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200";
             panelHistory.classList.remove('hidden');
             panelDeposit.classList.add('hidden');
             panelWithdraw.classList.add('hidden');
@@ -815,7 +895,6 @@
                     status: 'approved'
                 });
 
-                // Update turnover requirement alongside normal balance addition
                 const updatedTotal = currentBalance + amount;
                 const updatedTurnover = requiredTurnover + amount;
                 
@@ -824,7 +903,7 @@
 
                 const { error } = await supabaseClient.from('profiles').update({ 
                     balance: updatedTotal,
-                    deposited_balance: updatedTotal, // mapping fields
+                    deposited_balance: updatedTotal, 
                     required_turnover: updatedTurnover
                 }).eq('id', currentUserSession.id);
 
@@ -907,7 +986,6 @@
             const structuredDetails = `Bank: ${bank} | Acc No: ${accountNumber} | Name: ${accountName}`;
             const { data: { user } } = await supabaseClient.auth.getUser();
             
-            // Deduct from wallet balance
             const syncStatus = await updateDatabaseWalletBalance(currentBalance - amount);
             if (!syncStatus) return;
 
@@ -1005,7 +1083,6 @@
             cashoutBtn.className = cashoutBtn.className.replace('bg-amber-500', 'bg-slate-800 text-slate-500 cursor-not-allowed border border-white/5 shadow-none');
             gameStats.classList.remove('hidden');
             
-            // Lock out adjustments during active round gameplay
             betInput.disabled = true;
             document.querySelectorAll('#mines-pills-row button').forEach(btn => btn.disabled = true);
 
@@ -1074,7 +1151,6 @@
             cashoutBtn.innerHTML = revealedCount > 0 ? `<i data-lucide="banknote" class="w-5 h-5"></i> Cashout: ₦${currentProfit.toLocaleString(undefined, {maximumFractionDigits: 0})}` : `<i data-lucide="banknote" class="w-5 h-5"></i> Cashout`;
             lucide.createIcons();
 
-            // RENDER DYNAMIC TICKER ROADMAP TIMELINE
             multiplierTickerBar.classList.remove('hidden');
             tickerTimeline.innerHTML = `
                 <span class="text-emerald-400 font-extrabold bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20">${currentMult}x</span>
@@ -1134,7 +1210,6 @@
             cashoutBtn.classList.add('hidden');
             multiplierTickerBar.classList.add('hidden');
             
-            // Re-enable input components
             betInput.disabled = false;
             document.querySelectorAll('#mines-pills-row button').forEach(btn => btn.disabled = false);
 
