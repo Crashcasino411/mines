@@ -887,6 +887,7 @@
             async function handleSuccessfulPayment(reference) {
                 alert("💳 Payment authorized by Paystack! reference: " + reference);
                 
+                // 1. Insert the transaction record log first
                 await supabaseClient.from('transactions').insert({
                     user_id: currentUserSession.id,
                     type: 'deposit',
@@ -895,18 +896,20 @@
                     status: 'approved'
                 });
 
+                // 2. Safely calculate values locally before updating
                 const updatedTotal = currentBalance + amount;
                 const updatedTurnover = requiredTurnover + amount;
                 
                 const localBackupKey = `mineblast_bal_${currentUserSession.id}`;
                 localStorage.setItem(localBackupKey, updatedTotal);
 
+                // 3. Make the update call to the database fields
                 const { error } = await supabaseClient.from('profiles').update({ 
                     balance: updatedTotal,
-                    deposited_balance: updatedTotal, 
                     required_turnover: updatedTurnover
                 }).eq('id', currentUserSession.id);
 
+                // 4. Force synchronization to fetch fresh structural totals and clear UI states
                 await syncProfileWallet();
                 alert(`🎉 Success! ₦${amount.toLocaleString()} has been securely credited. Turn over your deposits across games to unlock withdrawal access.`);
 
